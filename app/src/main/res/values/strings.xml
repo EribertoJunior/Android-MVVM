@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Android MVVM</string>
+    <string name="ola">Olá</string>
 </resources>

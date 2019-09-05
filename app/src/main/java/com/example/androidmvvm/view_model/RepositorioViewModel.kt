@@ -21,11 +21,11 @@ class RepositorioViewModel : ViewModel() {
         repositorioData.value = RepositorioDTO(status = RepositorioDTO.STATUS.CLOSE_LOADING)
     }
 
-    fun success(){
+    fun success(result: RepositorioDTO){
         closeLoading()
     }
 
-    fun error(){
+    fun error(mensagem: String){
         closeLoading()
     }
 

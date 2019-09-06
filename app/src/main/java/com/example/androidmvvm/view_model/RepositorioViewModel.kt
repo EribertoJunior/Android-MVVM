@@ -12,7 +12,7 @@ class RepositorioViewModel : ViewModel() {
     val repositorioData : MutableLiveData<RepositorioDTO> = MutableLiveData()
 
     init {
-        getRepositorios(0)
+        repositorioData.value?.proximaPage?.let { getRepositorios(it) }
     }
 
     fun openLoading(){
@@ -24,6 +24,7 @@ class RepositorioViewModel : ViewModel() {
         repositorioWebClient.getRepositorios(page, object : SearchResultListener{
             override fun onSearchResult(result: RepositorioDTO) {
                 result.status = RepositorioDTO.STATUS.SUCCESS
+                result.proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
                 repositorioData.value = result
             }
 

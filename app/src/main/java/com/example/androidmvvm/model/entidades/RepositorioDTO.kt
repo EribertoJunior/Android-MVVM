@@ -5,6 +5,7 @@ import java.io.Serializable
 class RepositorioDTO(
     var items: ArrayList<Repositorio> = arrayListOf(),
     var errorManseger: String = "",
+    var proximaPage: Int = 0,
     var status: STATUS
 ) : Serializable {
 

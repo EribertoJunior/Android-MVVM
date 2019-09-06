@@ -11,12 +11,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidmvvm.R
 import com.example.androidmvvm.model.entidades.Repositorio
+import com.example.androidmvvm.model.interfaces.InteracaoComLista
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_repositorio.view.*
 
 class AdapterRepositorios(
     private val context: Context,
-    private val mValues: ArrayList<Repositorio>
+    private val mValues: ArrayList<Repositorio>,
+    private val interacaoComLista: InteracaoComLista<Repositorio>
 ) : RecyclerView.Adapter<AdapterRepositorios.ViewHolder>() {
 
     @SuppressLint("InflateParams")
@@ -33,6 +35,8 @@ class AdapterRepositorios(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val repositorio = mValues[position]
+
+        //TODO implementar paginação
 
         holder.tvNomerepositorio.text = repositorio.nomeRepositorio
         holder.tvDescricaoRepositorio.text = repositorio.descricaoRepositorio

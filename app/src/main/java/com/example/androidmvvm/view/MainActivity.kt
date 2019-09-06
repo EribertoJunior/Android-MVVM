@@ -13,7 +13,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidmvvm.R
+import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.entidades.RepositorioDTO
+import com.example.androidmvvm.model.interfaces.InteracaoComLista
 import com.example.androidmvvm.view.recyclerViewAdapter.AdapterRepositorios
 import com.example.androidmvvm.view_model.RepositorioViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -34,6 +36,9 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         initRecyclerView()
         initObservables()
 
+        swipeRefresh_repositorios.setOnRefreshListener {
+            viewModel.getRepositorios(page = 0)
+        }
     }
 
     private fun initObservables() {
@@ -44,7 +49,21 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 }
                 RepositorioDTO.STATUS.SUCCESS -> {
                     swipeRefresh_repositorios.isRefreshing = false
-                    recyclerViewRepositorios.adapter = AdapterRepositorios(mValues = it.items, context = this)
+                    recyclerViewRepositorios.adapter =
+                        AdapterRepositorios(
+                            context = this,
+                            mValues = it.items,
+                            interacaoComLista = object : InteracaoComLista<Repositorio> {
+                                override fun buscarmais() {
+                                    // paginação
+                                    viewModel.getRepositorios(page = it.proximaPage)
+                                }
+
+                                override fun selecionou(itemSelecionado: Repositorio) {
+                                    //transição de tela
+                                }
+
+                            })
                 }
                 RepositorioDTO.STATUS.ERROR -> {
                     swipeRefresh_repositorios.isRefreshing = false

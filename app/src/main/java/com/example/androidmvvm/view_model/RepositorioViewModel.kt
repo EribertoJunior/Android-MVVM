@@ -9,33 +9,21 @@ import com.example.androidmvvm.model.retrofit.webClient.RepositorioWebClient
 class RepositorioViewModel : ViewModel() {
 
     private val repositorioWebClient = RepositorioWebClient()
-    private val repositorioData : MutableLiveData<RepositorioDTO> = MutableLiveData()
+    val repositorioData : MutableLiveData<RepositorioDTO> = MutableLiveData()
 
-    fun observerDataRepositorio() = repositorioData
+    init {
+        getRepositorios(0)
+    }
 
     fun openLoading(){
         repositorioData.value = RepositorioDTO(status = RepositorioDTO.STATUS.OPEN_LOADING)
     }
 
-    fun closeLoading(){
-        repositorioData.value = RepositorioDTO(status = RepositorioDTO.STATUS.CLOSE_LOADING)
-    }
-
-    fun success(result: RepositorioDTO){
-        closeLoading()
-    }
-
-    fun error(mensagem: String){
-        closeLoading()
-    }
-
-    fun getRepositorios(){
-        //exibir loading
+    fun getRepositorios(page: Int){
         openLoading()
-
-        repositorioWebClient.getRepositorios(0, object : SearchResultListener{
+        repositorioWebClient.getRepositorios(page, object : SearchResultListener{
             override fun onSearchResult(result: RepositorioDTO) {
-                result.status = RepositorioDTO.STATUS.CLOSE_LOADING
+                result.status = RepositorioDTO.STATUS.SUCCESS
                 repositorioData.value = result
             }
 

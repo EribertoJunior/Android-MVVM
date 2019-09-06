@@ -3,7 +3,7 @@ package com.example.androidmvvm.model.entidades
 import java.io.Serializable
 
 class RepositorioDTO(
-    var items: ArrayList<Repositrio> = arrayListOf(),
+    var items: ArrayList<Repositorio> = arrayListOf(),
     var errorManseger: String = "",
     var status: STATUS
 ) : Serializable {

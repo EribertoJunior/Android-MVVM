@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Android MVVM</string>
     <string name="ola">Olá</string>
+    <string name="titulo_activity_repositorios">Lista de repositórios</string>
 </resources>

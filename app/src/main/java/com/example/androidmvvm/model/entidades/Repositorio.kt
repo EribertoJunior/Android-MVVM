@@ -3,7 +3,7 @@ package com.example.androidmvvm.model.entidades
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class Repositrio(
+class Repositorio(
     @SerializedName("name")
     var nomeRepositorio: String,
     @SerializedName("description")

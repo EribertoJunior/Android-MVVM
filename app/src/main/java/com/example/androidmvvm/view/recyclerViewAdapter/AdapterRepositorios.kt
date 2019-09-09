@@ -21,6 +21,8 @@ class AdapterRepositorios(
     private val interacaoComLista: InteracaoComLista<Repositorio>
 ) : RecyclerView.Adapter<AdapterRepositorios.ViewHolder>() {
 
+    private var quantidadeAdicionada: Int = mValues.size
+
     @SuppressLint("InflateParams")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -33,10 +35,20 @@ class AdapterRepositorios(
 
     override fun getItemCount() = mValues.size
 
+    fun adicinarNovaLista(novaLista: ArrayList<Repositorio>) {
+        quantidadeAdicionada = novaLista.size
+        mValues.addAll(novaLista)
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val repositorio = mValues[position]
 
-        //TODO implementar paginação
+        if (quantidadeAdicionada == 30) {
+            if (position == (mValues.size - 5)) {
+                interacaoComLista.buscarmais()
+            }
+        }
 
         holder.tvNomerepositorio.text = repositorio.nomeRepositorio
         holder.tvDescricaoRepositorio.text = repositorio.descricaoRepositorio

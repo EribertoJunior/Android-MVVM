@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         ViewModelProviders.of(this).get(RepositorioViewModel::class.java)
     }
 
+    private var primeiraLista = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,10 +37,13 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
         initRecyclerView()
         initObservables()
+        viewModel.getRepositorios()
 
         swipeRefresh_repositorios.setOnRefreshListener {
-            viewModel.getRepositorios(page = 0)
+            viewModel.getRepositorios()
         }
+
+        lifecycle.addObserver(viewModel)
     }
 
     private fun initObservables() {
@@ -47,28 +52,40 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 RepositorioDTO.STATUS.OPEN_LOADING -> {
                     swipeRefresh_repositorios.isRefreshing = true
                 }
+
                 RepositorioDTO.STATUS.SUCCESS -> {
                     swipeRefresh_repositorios.isRefreshing = false
-                    recyclerViewRepositorios.adapter =
-                        AdapterRepositorios(
-                            context = this,
-                            mValues = it.items,
-                            interacaoComLista = object : InteracaoComLista<Repositorio> {
-                                override fun buscarmais() {
-                                    // paginação
-                                    viewModel.getRepositorios(page = it.proximaPage)
-                                }
+                    if (primeiraLista) {
+                        recyclerViewRepositorios.adapter =
+                            AdapterRepositorios(
+                                context = this,
+                                mValues = it.items,
+                                interacaoComLista = object : InteracaoComLista<Repositorio> {
+                                    override fun buscarmais() {
 
-                                override fun selecionou(itemSelecionado: Repositorio) {
-                                    //transição de tela
-                                }
+                                        viewModel.getRepositorios()
 
-                            })
+
+                                    }
+
+                                    override fun selecionou(itemSelecionado: Repositorio) {
+                                        //transição de tela
+                                    }
+
+                                })
+                        primeiraLista = false
+                    } else
+                        if (recyclerViewRepositorios.adapter is AdapterRepositorios) {
+                            val adapter = recyclerViewRepositorios.adapter as AdapterRepositorios
+                            adapter.adicinarNovaLista(it.items)
+                        }
                 }
+
                 RepositorioDTO.STATUS.ERROR -> {
                     swipeRefresh_repositorios.isRefreshing = false
                     Toast.makeText(this, it.errorManseger, Toast.LENGTH_LONG).show()
                 }
+
                 RepositorioDTO.STATUS.CLOSE_LOADING -> {
                     swipeRefresh_repositorios.isRefreshing = false
                 }

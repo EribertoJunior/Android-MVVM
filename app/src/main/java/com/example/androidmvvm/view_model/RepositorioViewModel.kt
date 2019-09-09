@@ -1,37 +1,48 @@
 package com.example.androidmvvm.view_model
 
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.androidmvvm.model.entidades.RepositorioDTO
 import com.example.androidmvvm.model.interfaces.SearchResultListener
 import com.example.androidmvvm.model.retrofit.webClient.RepositorioWebClient
 
-class RepositorioViewModel : ViewModel() {
+class RepositorioViewModel : ViewModel(), LifecycleObserver {
 
     private val repositorioWebClient = RepositorioWebClient()
-    val repositorioData : MutableLiveData<RepositorioDTO> = MutableLiveData()
+    val repositorioData : MutableLiveData<RepositorioDTO> = MutableLiveData(RepositorioDTO(status = RepositorioDTO.STATUS.OPEN_LOADING))
 
-    init {
-        repositorioData.value?.proximaPage?.let { getRepositorios(it) }
-    }
+
+    val page = 1
+    /*init {
+        getRepositorios(1)
+    }*/
 
     fun openLoading(){
-        repositorioData.value = RepositorioDTO(status = RepositorioDTO.STATUS.OPEN_LOADING)
+        repositorioData.postValue(repositorioData.value?.apply {
+            this.status =  RepositorioDTO.STATUS.OPEN_LOADING
+        })
+
     }
 
-    fun getRepositorios(page: Int){
+    fun getRepositorios(){
         openLoading()
-        repositorioWebClient.getRepositorios(page, object : SearchResultListener{
-            override fun onSearchResult(result: RepositorioDTO) {
-                result.status = RepositorioDTO.STATUS.SUCCESS
-                result.proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
-                repositorioData.value = result
-            }
+        repositorioData.value?.let {
+            repositorioWebClient.getRepositorios(it.proximaPage, object : SearchResultListener{
+                override fun onSearchResult(result: RepositorioDTO) {
+                    result.status = RepositorioDTO.STATUS.SUCCESS
 
-            override fun onSearchErro(mensagem: String) {
-                repositorioData.value = RepositorioDTO(errorManseger = mensagem, status = RepositorioDTO.STATUS.CLOSE_LOADING)
-            }
-        })
+                    result.proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+
+                repositorioData.value = result
+//                    repositorioData.postValue(result)
+                }
+
+                override fun onSearchErro(mensagem: String) {
+                    repositorioData.value = RepositorioDTO(errorManseger = mensagem, status = RepositorioDTO.STATUS.CLOSE_LOADING)
+                }
+            })
+        }
     }
 
 }

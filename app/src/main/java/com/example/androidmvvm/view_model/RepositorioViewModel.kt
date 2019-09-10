@@ -27,6 +27,7 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
 
     fun getRepositorios(){
         openLoading()
+
         repositorioData.value?.let {
             repositorioWebClient.getRepositorios(it.proximaPage, object : SearchResultListener{
                 override fun onSearchResult(result: RepositorioDTO) {
@@ -35,7 +36,7 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
                     result.proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
 
                 repositorioData.value = result
-//                    repositorioData.postValue(result)
+
                 }
 
                 override fun onSearchErro(mensagem: String) {

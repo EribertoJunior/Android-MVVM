@@ -65,7 +65,6 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
                                         viewModel.getRepositorios()
 
-
                                     }
 
                                     override fun selecionou(itemSelecionado: Repositorio) {

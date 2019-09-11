@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         viewModel.getRepositorios()
 
         swipeRefresh_repositorios.setOnRefreshListener {
-            viewModel.getRepositorios()
+            viewModel.getRepositorios(true)
         }
 
         lifecycle.addObserver(viewModel)
@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     private fun initObservables() {
         viewModel.repositorioData.observe(this, Observer {
             when (it.status) {
+
                 RepositorioDTO.STATUS.OPEN_LOADING -> {
                     swipeRefresh_repositorios.isRefreshing = true
                 }
@@ -87,6 +88,27 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
                 RepositorioDTO.STATUS.CLOSE_LOADING -> {
                     swipeRefresh_repositorios.isRefreshing = false
+                }
+
+                RepositorioDTO.STATUS.RECARREGAR -> {
+                    swipeRefresh_repositorios.isRefreshing = false
+
+                    recyclerViewRepositorios.adapter =
+                        AdapterRepositorios(
+                            context = this,
+                            mValues = it.items,
+                            interacaoComLista = object : InteracaoComLista<Repositorio> {
+                                override fun buscarmais() {
+
+                                    viewModel.getRepositorios()
+
+                                }
+
+                                override fun selecionou(itemSelecionado: Repositorio) {
+                                    //transição de tela
+                                }
+
+                            })
                 }
             }
         })

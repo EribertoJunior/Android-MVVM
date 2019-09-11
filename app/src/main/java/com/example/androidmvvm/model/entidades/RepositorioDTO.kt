@@ -13,6 +13,7 @@ class RepositorioDTO(
         OPEN_LOADING,
         CLOSE_LOADING,
         SUCCESS,
+        RECARREGAR,
         ERROR
     }
 }

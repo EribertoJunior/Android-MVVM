@@ -2,16 +2,11 @@ package com.example.androidmvvm.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.androidmvvm.R
 import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.entidades.RepositorioDTO
@@ -37,9 +32,10 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
         initRecyclerView()
         initObservables()
-        viewModel.getRepositorios()
+        //viewModel.getRepositorios()
 
         swipeRefresh_repositorios.setOnRefreshListener {
+
             viewModel.getRepositorios(true)
         }
 
@@ -56,16 +52,15 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
                 RepositorioDTO.STATUS.SUCCESS -> {
                     swipeRefresh_repositorios.isRefreshing = false
-                    if (primeiraLista) {
+
+                    if (it.recarga) {
                         recyclerViewRepositorios.adapter =
                             AdapterRepositorios(
                                 context = this,
                                 mValues = it.items,
                                 interacaoComLista = object : InteracaoComLista<Repositorio> {
                                     override fun buscarmais() {
-
                                         viewModel.getRepositorios()
-
                                     }
 
                                     override fun selecionou(itemSelecionado: Repositorio) {
@@ -73,12 +68,9 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                                     }
 
                                 })
-                        primeiraLista = false
                     } else
-                        if (recyclerViewRepositorios.adapter is AdapterRepositorios) {
-                            val adapter = recyclerViewRepositorios.adapter as AdapterRepositorios
-                            adapter.adicinarNovaLista(it.items)
-                        }
+                        adicionarNovosItens(it.items)
+
                 }
 
                 RepositorioDTO.STATUS.ERROR -> {
@@ -112,6 +104,13 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 }
             }
         })
+    }
+
+    private fun adicionarNovosItens(items: ArrayList<Repositorio>) {
+        if (recyclerViewRepositorios.adapter is AdapterRepositorios) {
+            val adapter = recyclerViewRepositorios.adapter as AdapterRepositorios
+            adapter.adicinarNovaLista(items)
+        }
     }
 
     private fun initRecyclerView() {

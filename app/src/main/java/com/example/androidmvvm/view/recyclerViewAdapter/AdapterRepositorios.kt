@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.item_repositorio.view.*
 class AdapterRepositorios(
     private val context: Context,
     private val mValues: ArrayList<Repositorio>,
-    private val interacaoComLista: InteracaoComLista<Repositorio>
+    private val interacaoComLista: InteracaoComLista<Repositorio>?
 ) : RecyclerView.Adapter<AdapterRepositorios.ViewHolder>() {
 
     private var quantidadeAdicionada: Int = mValues.size
@@ -46,7 +46,7 @@ class AdapterRepositorios(
 
         if (quantidadeAdicionada == 30) {
             if (position == (mValues.size - 5)) {
-                interacaoComLista.buscarmais()
+                interacaoComLista?.buscarmais()
             }
         }
 

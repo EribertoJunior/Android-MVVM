@@ -6,7 +6,8 @@ class RepositorioDTO(
     var items: ArrayList<Repositorio> = arrayListOf(),
     var errorManseger: String = "",
     var proximaPage: Int = 1,
-    var status: STATUS
+    var status: STATUS,
+    var recarga: Boolean = true
 ) : Serializable {
 
     enum class STATUS {

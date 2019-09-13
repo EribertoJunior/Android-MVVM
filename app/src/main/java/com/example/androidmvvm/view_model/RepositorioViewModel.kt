@@ -15,9 +15,9 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
 
 
     val page = 1
-    /*init {
-        getRepositorios(1)
-    }*/
+    init {
+        getRepositorios(true)
+    }
 
     fun openLoading() {
         repositorioData.postValue(repositorioData.value?.apply {
@@ -32,9 +32,12 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
         if (isSwipe) {
             repositorioWebClient.getRepositorios(page, object : SearchResultListener {
                 override fun onSearchResult(result: RepositorioDTO) {
-                    result.status = RepositorioDTO.STATUS.RECARREGAR
 
-                    result.proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+                    result.apply {
+                        status = RepositorioDTO.STATUS.SUCCESS
+                        recarga = isSwipe
+                        proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+                    }
 
                     repositorioData.value = result
 
@@ -48,15 +51,26 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
                 }
             })
         } else
-
             repositorioData.value?.let {
                 repositorioWebClient.getRepositorios(it.proximaPage, object : SearchResultListener {
                     override fun onSearchResult(result: RepositorioDTO) {
-                        result.status = RepositorioDTO.STATUS.SUCCESS
 
-                        result.proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+                        //result.status = RepositorioDTO.STATUS.SUCCESS
+                        //result.proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+
+                        result.apply {
+                            status = RepositorioDTO.STATUS.SUCCESS
+                            recarga = isSwipe
+                            proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+                        }
 
                         repositorioData.value = result
+
+                        /*repositorioData.value?.let { repoData ->
+                            repoData.items = result.items
+                            repoData.proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+                            repoData.status = RepositorioDTO.STATUS.SUCCESS
+                        }*/
 
                     }
 

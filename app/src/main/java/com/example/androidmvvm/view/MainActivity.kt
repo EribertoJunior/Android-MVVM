@@ -22,36 +22,43 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         ViewModelProviders.of(this).get(RepositorioViewModel::class.java)
     }
 
-    private var primeiraLista = true
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         toolbar.title = getString(R.string.titulo_activity_repositorios)
 
+        //inicialisa o recyclerView
         initRecyclerView()
+        //inicialisa a viewModel
         initObservables()
-        //viewModel.getRepositorios()
 
         swipeRefresh_repositorios.setOnRefreshListener {
-
+            //recarrega a primeira pagina
             viewModel.getRepositorios(true)
         }
 
+
+
+        //Amarra o ciclo de vida do livedata ao ciclo de vida da activity
         lifecycle.addObserver(viewModel)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
     }
 
     private fun initObservables() {
         viewModel.repositorioData.observe(this, Observer {
-            when (it.status) {
+            when (it.status) {//validando o status da requisição
 
-                RepositorioDTO.STATUS.OPEN_LOADING -> {
-                    swipeRefresh_repositorios.isRefreshing = true
+                RepositorioDTO.STATUS.OPEN_LOADING -> {//mostra o loading
+                    showLoading()
                 }
 
                 RepositorioDTO.STATUS.SUCCESS -> {
-                    swipeRefresh_repositorios.isRefreshing = false
+                    hideLoading()
 
                     if (it.recarga) {
                         recyclerViewRepositorios.adapter =
@@ -74,36 +81,27 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 }
 
                 RepositorioDTO.STATUS.ERROR -> {
-                    swipeRefresh_repositorios.isRefreshing = false
+                    hideLoading()
                     Toast.makeText(this, it.errorManseger, Toast.LENGTH_LONG).show()
                 }
 
                 RepositorioDTO.STATUS.CLOSE_LOADING -> {
-                    swipeRefresh_repositorios.isRefreshing = false
+                    hideLoading()
                 }
 
                 RepositorioDTO.STATUS.RECARREGAR -> {
-                    swipeRefresh_repositorios.isRefreshing = false
-
-                    recyclerViewRepositorios.adapter =
-                        AdapterRepositorios(
-                            context = this,
-                            mValues = it.items,
-                            interacaoComLista = object : InteracaoComLista<Repositorio> {
-                                override fun buscarmais() {
-
-                                    viewModel.getRepositorios()
-
-                                }
-
-                                override fun selecionou(itemSelecionado: Repositorio) {
-                                    //transição de tela
-                                }
-
-                            })
+                    hideLoading()
                 }
             }
         })
+    }
+
+    private fun hideLoading() {
+        swipeRefresh_repositorios.isRefreshing = false
+    }
+
+    private fun showLoading() {
+        swipeRefresh_repositorios.isRefreshing = true
     }
 
     private fun adicionarNovosItens(items: ArrayList<Repositorio>) {

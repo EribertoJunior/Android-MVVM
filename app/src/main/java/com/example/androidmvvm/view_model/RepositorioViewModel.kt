@@ -13,8 +13,7 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
     val repositorioData: MutableLiveData<RepositorioDTO> =
         MutableLiveData(RepositorioDTO(status = RepositorioDTO.STATUS.OPEN_LOADING))
 
-
-    val page = 1
+    private val page = 1
     init {
         getRepositorios(true)
     }
@@ -46,7 +45,7 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
                 override fun onSearchErro(mensagem: String) {
                     repositorioData.value = RepositorioDTO(
                         errorManseger = mensagem,
-                        status = RepositorioDTO.STATUS.CLOSE_LOADING
+                        status = RepositorioDTO.STATUS.ERROR
                     )
                 }
             })
@@ -55,29 +54,22 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
                 repositorioWebClient.getRepositorios(it.proximaPage, object : SearchResultListener {
                     override fun onSearchResult(result: RepositorioDTO) {
 
-                        //result.status = RepositorioDTO.STATUS.SUCCESS
-                        //result.proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
-
+                        //it.listaCompleta.addAll(result.items)
                         result.apply {
                             status = RepositorioDTO.STATUS.SUCCESS
                             recarga = isSwipe
                             proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+                            //listaCompleta = it.listaCompleta
                         }
 
                         repositorioData.value = result
-
-                        /*repositorioData.value?.let { repoData ->
-                            repoData.items = result.items
-                            repoData.proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
-                            repoData.status = RepositorioDTO.STATUS.SUCCESS
-                        }*/
 
                     }
 
                     override fun onSearchErro(mensagem: String) {
                         repositorioData.value = RepositorioDTO(
                             errorManseger = mensagem,
-                            status = RepositorioDTO.STATUS.CLOSE_LOADING
+                            status = RepositorioDTO.STATUS.ERROR
                         )
                     }
                 })

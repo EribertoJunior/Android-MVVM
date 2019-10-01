@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitConfig {
     var interceptador : HttpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-    var client = OkHttpClient.Builder().addInterceptor(interceptador).build()
+    var client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptador).build()
 
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://api.github.com/")

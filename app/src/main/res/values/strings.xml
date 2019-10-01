@@ -2,4 +2,8 @@
     <string name="app_name">Android MVVM</string>
     <string name="ola">Olá</string>
     <string name="titulo_activity_repositorios">Lista de repositórios</string>
+    <string name="title_activity_teste_bottom_navigation">TesteBottomNavigationActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

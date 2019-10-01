@@ -10,12 +10,15 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class RepositorioWebClient {
-    fun getRepositorios(page:Int, callbackResponse: SearchResultListener) {
+    fun getRepositorios(page: Int, callbackResponse: SearchResultListener) {
 
         val call = RetrofitConfig().repositorioService().getRepositorios(page = page)
 
         call.enqueue(object : Callback<RepositorioDTO> {
-            override fun onResponse(call: Call<RepositorioDTO>, response: Response<RepositorioDTO>) {
+            override fun onResponse(
+                call: Call<RepositorioDTO>,
+                response: Response<RepositorioDTO>
+            ) {
 
                 response.body()?.let {
                     callbackResponse.onSearchResult(it)
@@ -23,10 +26,15 @@ class RepositorioWebClient {
 
                 response.errorBody().let {
                     if (it != null) {
-                        val listaDeErros: JSONArray = JSONObject(it.string()).getJSONArray("errors")
-                        for (i in 0 until listaDeErros.length()) {
-                            callbackResponse.onSearchErro(listaDeErros[i] as String)
-                        }
+                        response.isSuccessful
+                        response.body()
+                        response.code()
+                        response.errorBody()
+                        response.message()
+                        response.headers()
+                        response.raw()
+
+                        callbackResponse.onSearchErro(response.message())
                     }
                 }
             }

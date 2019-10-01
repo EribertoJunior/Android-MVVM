@@ -17,11 +17,12 @@ import kotlinx.android.synthetic.main.item_repositorio.view.*
 
 class AdapterRepositorios(
     private val context: Context,
-    private val mValues: ArrayList<Repositorio>,
+     var mValues: ArrayList<Repositorio> = arrayListOf(),
     private val interacaoComLista: InteracaoComLista<Repositorio>?
 ) : RecyclerView.Adapter<AdapterRepositorios.ViewHolder>() {
 
-    private var quantidadeAdicionada: Int = mValues.size
+    var quantidadeAdicionada: Int = mValues.size
+    var quantidadePorPagina: Int = 0
 
     @SuppressLint("InflateParams")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,16 +36,10 @@ class AdapterRepositorios(
 
     override fun getItemCount() = mValues.size
 
-    fun adicinarNovaLista(novaLista: ArrayList<Repositorio>) {
-        quantidadeAdicionada = novaLista.size
-        mValues.addAll(novaLista)
-        notifyDataSetChanged()
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val repositorio = mValues[position]
 
-        if (quantidadeAdicionada == 30) {
+        if (quantidadeAdicionada == quantidadePorPagina) {
             if (position == (mValues.size - 5)) {
                 interacaoComLista?.buscarmais()
             }

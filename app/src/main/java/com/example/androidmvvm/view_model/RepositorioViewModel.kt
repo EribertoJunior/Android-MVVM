@@ -3,6 +3,7 @@ package com.example.androidmvvm.view_model
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.entidades.RepositorioDTO
 import com.example.androidmvvm.model.interfaces.SearchResultListener
 import com.example.androidmvvm.model.retrofit.webClient.RepositorioWebClient
@@ -14,6 +15,7 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
         MutableLiveData(RepositorioDTO(status = RepositorioDTO.STATUS.OPEN_LOADING))
 
     private val page = 1
+
     init {
         getRepositorios(true)
     }
@@ -36,6 +38,8 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
                         status = RepositorioDTO.STATUS.SUCCESS
                         recarga = isSwipe
                         proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+                        quantidadeAdicionada = result.items.size
+                        quantidadePorPagina = result.items.size
                     }
 
                     repositorioData.value = result
@@ -43,10 +47,7 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
                 }
 
                 override fun onSearchErro(mensagem: String) {
-                    repositorioData.value = RepositorioDTO(
-                        errorManseger = mensagem,
-                        status = RepositorioDTO.STATUS.ERROR
-                    )
+                    dispararMensagemDeErro(mensagem)
                 }
             })
         } else
@@ -54,26 +55,39 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
                 repositorioWebClient.getRepositorios(it.proximaPage, object : SearchResultListener {
                     override fun onSearchResult(result: RepositorioDTO) {
 
-                        //it.listaCompleta.addAll(result.items)
                         result.apply {
                             status = RepositorioDTO.STATUS.SUCCESS
                             recarga = isSwipe
                             proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
-                            //listaCompleta = it.listaCompleta
+
                         }
 
-                        repositorioData.value = result
+                        repositorioData.postValue(repositorioData.value?.apply {
+                            status = RepositorioDTO.STATUS.SUCCESS
+                            recarga = isSwipe
+                            proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+                            quantidadeAdicionada = result.items.size
+
+                            it.items.addAll(result.items)
+                        })
 
                     }
 
                     override fun onSearchErro(mensagem: String) {
-                        repositorioData.value = RepositorioDTO(
-                            errorManseger = mensagem,
-                            status = RepositorioDTO.STATUS.ERROR
-                        )
+
+                        dispararMensagemDeErro(mensagem)
+
+
                     }
                 })
             }
+    }
+
+    private fun dispararMensagemDeErro(mensagem: String) {
+        repositorioData.postValue(repositorioData.value?.apply {
+            errorManseger = mensagem
+            status = RepositorioDTO.STATUS.ERROR
+        })
     }
 
 }

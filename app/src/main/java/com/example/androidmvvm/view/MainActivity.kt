@@ -22,12 +22,15 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         ViewModelProviders.of(this).get(RepositorioViewModel::class.java)
     }
 
+    private lateinit var adapter: AdapterRepositorios
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         toolbar.title = getString(R.string.titulo_activity_repositorios)
 
+        initAdapter()
         //inicialisa o recyclerView
         initRecyclerView()
         //inicialisa a viewModel
@@ -39,14 +42,24 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         }
 
 
-
         //Amarra o ciclo de vida do livedata ao ciclo de vida da activity
         lifecycle.addObserver(viewModel)
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun initAdapter() {
+        adapter =
+            AdapterRepositorios(
+                context = this,
+                interacaoComLista = object : InteracaoComLista<Repositorio> {
+                    override fun buscarmais() {
+                        viewModel.getRepositorios()
+                    }
 
+                    override fun selecionou(itemSelecionado: Repositorio) {
+                        //transição de tela
+                    }
+
+                })
     }
 
     private fun initObservables() {
@@ -59,30 +72,14 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
                 RepositorioDTO.STATUS.SUCCESS -> {
                     hideLoading()
-
-                    if (it.recarga) {
-                        recyclerViewRepositorios.adapter =
-                            AdapterRepositorios(
-                                context = this,
-                                mValues = it.items,
-                                interacaoComLista = object : InteracaoComLista<Repositorio> {
-                                    override fun buscarmais() {
-                                        viewModel.getRepositorios()
-                                    }
-
-                                    override fun selecionou(itemSelecionado: Repositorio) {
-                                        //transição de tela
-                                    }
-
-                                })
-                    } else
-                        adicionarNovosItens(it.items)
+                    adicionarNovosItens(it.items, it.quantidadeAdicionada, it.quantidadePorPagina)
 
                 }
 
                 RepositorioDTO.STATUS.ERROR -> {
                     hideLoading()
                     Toast.makeText(this, it.errorManseger, Toast.LENGTH_LONG).show()
+                    adicionarNovosItens(it.items, it.quantidadeAdicionada, it.quantidadePorPagina)
                 }
 
                 RepositorioDTO.STATUS.CLOSE_LOADING -> {
@@ -104,14 +101,21 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         swipeRefresh_repositorios.isRefreshing = true
     }
 
-    private fun adicionarNovosItens(items: ArrayList<Repositorio>) {
-        if (recyclerViewRepositorios.adapter is AdapterRepositorios) {
-            val adapter = recyclerViewRepositorios.adapter as AdapterRepositorios
-            adapter.adicinarNovaLista(items)
-        }
+    private fun adicionarNovosItens(
+        items: ArrayList<Repositorio>,
+        quantidadeAdicionada: Int,
+        quantidadePorPagina: Int
+    ) {
+
+        adapter.mValues = items
+        adapter.quantidadeAdicionada = quantidadeAdicionada
+        adapter.quantidadePorPagina = quantidadePorPagina
+        adapter.notifyDataSetChanged()
+
     }
 
     private fun initRecyclerView() {
         recyclerViewRepositorios.layoutManager = LinearLayoutManager(this)
+        recyclerViewRepositorios.adapter = adapter
     }
 }

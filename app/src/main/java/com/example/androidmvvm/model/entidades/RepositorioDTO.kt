@@ -4,9 +4,10 @@ import java.io.Serializable
 
 class RepositorioDTO(
     var items: ArrayList<Repositorio> = arrayListOf(),
-    var listaCompleta: ArrayList<Repositorio> = arrayListOf(),
+    var quantidadeAdicionada: Int = 0,
+    var quantidadePorPagina: Int = 0,
     var errorManseger: String = "",
-    var proximaPage: Int = 1,
+    var proximaPage: Int = 33,
     var status: STATUS,
     var recarga: Boolean = true
 ) : Serializable {

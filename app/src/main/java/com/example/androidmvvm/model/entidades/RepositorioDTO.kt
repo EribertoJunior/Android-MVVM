@@ -7,7 +7,7 @@ class RepositorioDTO(
     var quantidadeAdicionada: Int = 0,
     var quantidadePorPagina: Int = 0,
     var errorManseger: String = "",
-    var proximaPage: Int = 33,
+    var proximaPage: Int = 1,
     var status: STATUS,
     var recarga: Boolean = true
 ) : Serializable {

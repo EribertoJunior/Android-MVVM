@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.androidmvvm.R
 import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.entidades.RepositorioDTO
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         initAdapter()
         //inicialisa o recyclerView
         initRecyclerView()
+
         //inicialisa a viewModel
         initObservables()
 
@@ -63,7 +65,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     private fun initObservables() {
-        viewModel.repositorioData.observe(this, Observer {
+        viewModel.repositorioData.observe(this, Observer<RepositorioDTO> {
             when (it.status) {//validando o status da requisição
 
                 RepositorioDTO.STATUS.OPEN_LOADING -> {//mostra o loading
@@ -118,4 +120,5 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         recyclerViewRepositorios.layoutManager = LinearLayoutManager(this)
         recyclerViewRepositorios.adapter = adapter
     }
+
 }

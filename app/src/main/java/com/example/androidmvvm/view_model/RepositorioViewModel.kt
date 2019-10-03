@@ -16,6 +16,10 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
 
     private val page = 1
 
+    companion object {
+        private const val VISIBLE_THRESHOLD = 5
+    }
+
     init {
         getRepositorios(true)
     }

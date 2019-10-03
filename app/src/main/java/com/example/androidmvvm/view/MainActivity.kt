@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.androidmvvm.R
 import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.entidades.RepositorioDTO
@@ -117,5 +118,23 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     private fun initRecyclerView() {
         recyclerViewRepositorios.layoutManager = LinearLayoutManager(this)
         recyclerViewRepositorios.adapter = adapter
+
+        val layoutManager: LinearLayoutManager =
+            recyclerViewRepositorios.layoutManager as LinearLayoutManager
+
+        recyclerViewRepositorios.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val findFirstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                viewModel.buscarMaisItens(visibleItemCount, totalItemCount, findFirstVisibleItemPosition)
+
+            }
+        })
+
+
     }
 }

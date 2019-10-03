@@ -39,11 +39,11 @@ class AdapterRepositorios(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val repositorio = mValues[position]
 
-        if (quantidadeAdicionada == quantidadePorPagina) {
+        /*if (quantidadeAdicionada == quantidadePorPagina) {
             if (position == (mValues.size - 5)) {
                 interacaoComLista?.buscarmais()
             }
-        }
+        }*/
 
         holder.tvNomerepositorio.text = repositorio.nomeRepositorio
         holder.tvDescricaoRepositorio.text = repositorio.descricaoRepositorio

@@ -3,7 +3,6 @@ package com.example.androidmvvm.view_model
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.entidades.RepositorioDTO
 import com.example.androidmvvm.model.interfaces.SearchResultListener
 import com.example.androidmvvm.model.retrofit.webClient.RepositorioWebClient
@@ -88,6 +87,13 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
             errorManseger = mensagem
             status = RepositorioDTO.STATUS.ERROR
         })
+    }
+
+    fun buscarMaisItens(visibleItemCount: Int, totalItemCount: Int, firstVisibleItemPosition: Int) {
+        if ((visibleItemCount + firstVisibleItemPosition) == totalItemCount
+            && firstVisibleItemPosition >= 0 ) {
+            getRepositorios()
+        }
     }
 
 }

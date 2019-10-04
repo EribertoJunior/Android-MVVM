@@ -18,11 +18,14 @@ import kotlinx.android.synthetic.main.item_repositorio.view.*
 class AdapterRepositorios(
     private val context: Context,
      var mValues: ArrayList<Repositorio> = arrayListOf(),
-    private val interacaoComLista: InteracaoComLista<Repositorio>?
+    private val interacaoComLista: InteracaoComLista<Repositorio>
 ) : RecyclerView.Adapter<AdapterRepositorios.ViewHolder>() {
 
-    var quantidadeAdicionada: Int = mValues.size
-    var quantidadePorPagina: Int = 0
+    private val mOnclickListener: View.OnClickListener = View.OnClickListener {view ->
+        val repositorio = view.tag as Repositorio
+
+        interacaoComLista.selecionou(repositorio)
+    }
 
     @SuppressLint("InflateParams")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,12 +42,6 @@ class AdapterRepositorios(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val repositorio = mValues[position]
 
-        /*if (quantidadeAdicionada == quantidadePorPagina) {
-            if (position == (mValues.size - 5)) {
-                interacaoComLista?.buscarmais()
-            }
-        }*/
-
         holder.tvNomerepositorio.text = repositorio.nomeRepositorio
         holder.tvDescricaoRepositorio.text = repositorio.descricaoRepositorio
         holder.tvUserName.text = repositorio.proprietario.nomeAutor
@@ -59,14 +56,19 @@ class AdapterRepositorios(
                 .placeholder(it)
                 .into(holder.imageAvatar)
         }
+
+        with(holder.mView){
+            tag = repositorio
+            setOnClickListener(mOnclickListener)
+        }
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var tvNomerepositorio: TextView = view.tvNomerepositorio
-        var tvDescricaoRepositorio: TextView = view.tvDescricaoRepositorio
-        var tvNumeroForks: TextView = view.tvNumeroForks
-        var tvNumeroStars: TextView = view.tvNumeroStars
-        var tvUserName: TextView = view.tvUserName
-        var imageAvatar: ImageView = view.imageAvatar
+    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
+        var tvNomerepositorio: TextView = mView.tvNomerepositorio
+        var tvDescricaoRepositorio: TextView = mView.tvDescricaoRepositorio
+        var tvNumeroForks: TextView = mView.tvNumeroForks
+        var tvNumeroStars: TextView = mView.tvNumeroStars
+        var tvUserName: TextView = mView.tvUserName
+        var imageAvatar: ImageView = mView.imageAvatar
     }
 }

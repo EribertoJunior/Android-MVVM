@@ -1,5 +1,6 @@
 package com.example.androidmvvm.view
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -11,13 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.androidmvvm.R
 import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.entidades.RepositorioDTO
+import com.example.androidmvvm.model.enuns.STATUS
 import com.example.androidmvvm.model.interfaces.InteracaoComLista
 import com.example.androidmvvm.view.recyclerViewAdapter.AdapterRepositorios
 import com.example.androidmvvm.view_model.RepositorioViewModel
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.content_repositories.*
 
-class MainActivity : AppCompatActivity(), LifecycleOwner {
+class RepositoriesActivity : AppCompatActivity(), LifecycleOwner {
 
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(RepositorioViewModel::class.java)
@@ -27,9 +28,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        toolbar.title = getString(R.string.titulo_activity_repositorios)
+        setContentView(R.layout.activity_repositories)
 
         initAdapter()
         //inicialisa o recyclerView
@@ -52,14 +51,9 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
             AdapterRepositorios(
                 context = this,
                 interacaoComLista = object : InteracaoComLista<Repositorio> {
-                    override fun buscarmais() {
-                        viewModel.getRepositorios()
-                    }
-
                     override fun selecionou(itemSelecionado: Repositorio) {
-                        //transição de tela
+                        startActivity(Intent(this@RepositoriesActivity, ForksActivity::class.java))
                     }
-
                 })
     }
 
@@ -67,27 +61,26 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         viewModel.repositorioData.observe(this, Observer {
             when (it.status) {//validando o status da requisição
 
-                RepositorioDTO.STATUS.OPEN_LOADING -> {//mostra o loading
+                STATUS.OPEN_LOADING -> {//mostra o loading
                     showLoading()
                 }
 
-                RepositorioDTO.STATUS.SUCCESS -> {
+                STATUS.SUCCESS -> {
                     hideLoading()
-                    adicionarNovosItens(it.items, it.quantidadeAdicionada, it.quantidadePorPagina)
-
+                    adicionarNovosItens(it.items)
                 }
 
-                RepositorioDTO.STATUS.ERROR -> {
+                STATUS.ERROR -> {
                     hideLoading()
                     Toast.makeText(this, it.errorManseger, Toast.LENGTH_LONG).show()
-                    adicionarNovosItens(it.items, it.quantidadeAdicionada, it.quantidadePorPagina)
+                    adicionarNovosItens(it.items)
                 }
 
-                RepositorioDTO.STATUS.CLOSE_LOADING -> {
+                STATUS.CLOSE_LOADING -> {
                     hideLoading()
                 }
 
-                RepositorioDTO.STATUS.RECARREGAR -> {
+                STATUS.RECARREGAR -> {
                     hideLoading()
                 }
             }
@@ -103,14 +96,10 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     private fun adicionarNovosItens(
-        items: ArrayList<Repositorio>,
-        quantidadeAdicionada: Int,
-        quantidadePorPagina: Int
+        items: ArrayList<Repositorio>
     ) {
 
         adapter.mValues = items
-        adapter.quantidadeAdicionada = quantidadeAdicionada
-        adapter.quantidadePorPagina = quantidadePorPagina
         adapter.notifyDataSetChanged()
 
     }
@@ -130,11 +119,13 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 val totalItemCount = layoutManager.itemCount
                 val findFirstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-                viewModel.buscarMaisItens(visibleItemCount, totalItemCount, findFirstVisibleItemPosition)
+                viewModel.buscarMaisItens(
+                    visibleItemCount,
+                    totalItemCount,
+                    findFirstVisibleItemPosition
+                )
 
             }
         })
-
-
     }
 }

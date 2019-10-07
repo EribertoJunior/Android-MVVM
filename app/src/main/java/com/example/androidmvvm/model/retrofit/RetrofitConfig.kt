@@ -1,5 +1,6 @@
 package com.example.androidmvvm.model.retrofit
 
+import com.example.androidmvvm.model.retrofit.services.ForkService
 import com.example.androidmvvm.model.retrofit.services.RepositoriosService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -19,4 +20,6 @@ class RetrofitConfig {
         .build()
 
     fun repositorioService() = retrofit.create(RepositoriosService::class.java)
+
+    fun forkService() = retrofit.create(ForkService::class.java)
 }

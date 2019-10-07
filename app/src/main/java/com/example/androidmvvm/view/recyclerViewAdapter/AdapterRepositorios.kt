@@ -17,11 +17,11 @@ import kotlinx.android.synthetic.main.item_repositorio.view.*
 
 class AdapterRepositorios(
     private val context: Context,
-     var mValues: ArrayList<Repositorio> = arrayListOf(),
+    var mValues: ArrayList<Repositorio> = arrayListOf(),
     private val interacaoComLista: InteracaoComLista<Repositorio>
 ) : RecyclerView.Adapter<AdapterRepositorios.ViewHolder>() {
 
-    private val mOnclickListener: View.OnClickListener = View.OnClickListener {view ->
+    private val mOnclickListener: View.OnClickListener = View.OnClickListener { view ->
         val repositorio = view.tag as Repositorio
 
         interacaoComLista.selecionou(repositorio)
@@ -57,7 +57,7 @@ class AdapterRepositorios(
                 .into(holder.imageAvatar)
         }
 
-        with(holder.mView){
+        with(holder.mView) {
             tag = repositorio
             setOnClickListener(mOnclickListener)
         }

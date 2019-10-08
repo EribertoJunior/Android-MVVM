@@ -18,7 +18,7 @@
         tools:src="@drawable/ic_launcher_background" />
 
     <TextView
-        android:id="@+id/tvUserName"
+        android:id="@+id/tvUserNamePR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -29,15 +29,15 @@
         app:layout_constraintTop_toBottomOf="@+id/imageAvatar" />
 
     <TextView
-        android:id="@+id/tvNomeSobrenome"
+        android:id="@+id/tvNomeSobrenomePR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         tools:text="TextView"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/tvUserName"
-        app:layout_constraintStart_toStartOf="@+id/tvUserName"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserName" />
+        app:layout_constraintEnd_toEndOf="@+id/tvUserNamePR"
+        app:layout_constraintStart_toStartOf="@+id/tvUserNamePR"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserNamePR" />
 
     <TextView
         android:id="@+id/tvNomerepositorio"
@@ -124,5 +124,5 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNomeSobrenome" />
+        app:layout_constraintTop_toBottomOf="@+id/tvNomeSobrenomePR" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,7 +40,7 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/tvUserName"
+        android:id="@+id/tvUserNamePR"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -55,13 +55,13 @@
         tools:text="TextView" />
 
     <TextView
-        android:id="@+id/tvNomeSobrenome"
+        android:id="@+id/tvNomeSobrenomePR"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/tvUserName"
-        app:layout_constraintStart_toStartOf="@+id/tvUserName"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserName"
+        app:layout_constraintEnd_toEndOf="@+id/tvUserNamePR"
+        app:layout_constraintStart_toStartOf="@+id/tvUserNamePR"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserNamePR"
         tools:text="TextView" />
 
     <View

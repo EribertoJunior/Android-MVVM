@@ -68,7 +68,7 @@ class AdapterRepositorios(
         var tvDescricaoRepositorio: TextView = mView.tvDescricaoRepositorio
         var tvNumeroForks: TextView = mView.tvNumeroForks
         var tvNumeroStars: TextView = mView.tvNumeroStars
-        var tvUserName: TextView = mView.tvUserName
+        var tvUserName: TextView = mView.tvUserNamePR
         var imageAvatar: ImageView = mView.imageAvatar
     }
 }

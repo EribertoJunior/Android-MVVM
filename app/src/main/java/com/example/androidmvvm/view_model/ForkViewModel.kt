@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.androidmvvm.model.entidades.Fork
 import com.example.androidmvvm.model.entidades.ForkDTO
+import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.enuns.STATUS
 import com.example.androidmvvm.model.interfaces.SearchResultListener
 import com.example.androidmvvm.model.retrofit.webClient.ForkWebClient
@@ -68,10 +69,17 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
             status = STATUS.SUCCESS
             recarga = isSwipe
             proximaPage = forkData.value?.proximaPage?.plus(1) ?: 0
-            items = result
+            itens = result
         })
     }
 
+    fun definirRepositorio(repositorio: Repositorio) {
+        forkData.postValue(
+            forkData.value?.apply {
+                this.repositorio = repositorio
+            }
+        )
+    }
 
     private fun dispararMensagemDeErro(mensagem: String) {
         forkData.postValue(
@@ -82,12 +90,22 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
         )
     }
 
-    fun buscarMaisItens(visibleItemCount: Int, totalItemCount: Int, firstVisibleItemPosition: Int) {
+    fun buscarMaisItens(
+        visibleItemCount: Int,
+        totalItemCount: Int,
+        firstVisibleItemPosition: Int
+    ) {
         if (((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                     && firstVisibleItemPosition >= 0) && !isLoading
         ) {
-            //getForks()
+            forkData.value?.let {
+                it.repositorio?.let {repositorio ->
+                    getForks(
+                        nomeRepositorio = repositorio.nomeRepositorio,
+                        nomeProprietario = repositorio.proprietario.nomeAutor
+                    )
+                }
+            }
         }
     }
-
 }

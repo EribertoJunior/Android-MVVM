@@ -6,9 +6,11 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".view.ForksActivity"
+    android:id="@+id/swipeRefresh_fork"
     tools:showIn="@layout/activity_forks">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewForks"
         android:layout_width="409dp"
         android:layout_height="673dp"
         android:layout_marginStart="1dp"

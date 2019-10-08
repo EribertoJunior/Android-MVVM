@@ -14,6 +14,7 @@ import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.entidades.RepositorioDTO
 import com.example.androidmvvm.model.enuns.STATUS
 import com.example.androidmvvm.model.interfaces.InteracaoComLista
+import com.example.androidmvvm.model.util.KeyPutExtraUtil.REPOSITORIO_SELECIONADO
 import com.example.androidmvvm.view.recyclerViewAdapter.AdapterRepositorios
 import com.example.androidmvvm.view_model.RepositorioViewModel
 import kotlinx.android.synthetic.main.content_repositories.*
@@ -52,7 +53,11 @@ class RepositoriesActivity : AppCompatActivity(), LifecycleOwner {
                 context = this,
                 interacaoComLista = object : InteracaoComLista<Repositorio> {
                     override fun selecionou(itemSelecionado: Repositorio) {
-                        startActivity(Intent(this@RepositoriesActivity, ForksActivity::class.java))
+
+                        startActivity(
+                            Intent(this@RepositoriesActivity, ForksActivity::class.java).apply {
+                                putExtra(REPOSITORIO_SELECIONADO, itemSelecionado)
+                        })
                     }
                 })
     }

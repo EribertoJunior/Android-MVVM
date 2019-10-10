@@ -1,5 +1,6 @@
 package com.example.androidmvvm.view_model
 
+import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +19,18 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
 
     private val page = 1
     private var isLoading = false
+
+    init {
+        forkData.value?.let {
+            it.repositorio?.let { repositorio ->
+                getForks(
+                    nomeProprietario = repositorio.proprietario.nomeAutor,
+                    nomeRepositorio = repositorio.nomeRepositorio
+                )
+            }
+        }
+
+    }
 
     fun openLoading() {
         forkData.postValue(forkData.value?.apply {
@@ -74,11 +87,30 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
     }
 
     fun definirRepositorio(repositorio: Repositorio) {
-        forkData.postValue(
-            forkData.value?.apply {
-                this.repositorio = repositorio
-            }
-        )
+
+        /*forkData.value?.repositorio?.let {
+            Log.i("", "")
+        }.run {
+            Log.i("", "")
+            forkData.postValue(
+                forkData.value?.apply {
+                    this.repositorio = repositorio
+                }
+            )
+        }*/
+        if (forkData.value?.repositorio == null) {
+            forkData.postValue(
+                forkData.value?.apply {
+                    this.repositorio = repositorio
+                }
+            )
+
+            getForks(
+                nomeRepositorio = repositorio.nomeRepositorio,
+                nomeProprietario = repositorio.proprietario.nomeAutor
+            )
+        }
+
     }
 
     private fun dispararMensagemDeErro(mensagem: String) {
@@ -99,7 +131,7 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
                     && firstVisibleItemPosition >= 0) && !isLoading
         ) {
             forkData.value?.let {
-                it.repositorio?.let {repositorio ->
+                it.repositorio?.let { repositorio ->
                     getForks(
                         nomeRepositorio = repositorio.nomeRepositorio,
                         nomeProprietario = repositorio.proprietario.nomeAutor

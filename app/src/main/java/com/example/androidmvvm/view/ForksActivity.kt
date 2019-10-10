@@ -26,6 +26,8 @@ class ForksActivity : AppCompatActivity() {
 
     private lateinit var adapter: AdapterForks
 
+    private lateinit var repositorio: Repositorio
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forks)
@@ -37,12 +39,17 @@ class ForksActivity : AppCompatActivity() {
         }
 
         if (intent.hasExtra(REPOSITORIO_SELECIONADO)) {
-            viewModel.definirRepositorio(intent.getSerializableExtra(REPOSITORIO_SELECIONADO) as Repositorio)
+            repositorio = intent.getSerializableExtra(REPOSITORIO_SELECIONADO) as Repositorio
+            viewModel.definirRepositorio(repositorio)
             initAdapter()
             initRecyclerView()
             initObservable()
         } else {
             return
+        }
+
+        swipeRefresh_fork.setOnRefreshListener {
+            viewModel.getForks(nomeProprietario = repositorio.nomeRepositorio, nomeRepositorio = repositorio.proprietario.nomeAutor, isSwipe = true)
         }
     }
 

@@ -33,10 +33,6 @@ class ForksActivity : AppCompatActivity() {
         setContentView(R.layout.activity_forks)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
 
         if (intent.hasExtra(REPOSITORIO_SELECIONADO)) {
             repositorio = intent.getSerializableExtra(REPOSITORIO_SELECIONADO) as Repositorio
@@ -47,6 +43,8 @@ class ForksActivity : AppCompatActivity() {
         } else {
             return
         }
+
+
 
         swipeRefresh_fork.setOnRefreshListener {
             viewModel.getForks(nomeProprietario = repositorio.nomeRepositorio, nomeRepositorio = repositorio.proprietario.nomeAutor, isSwipe = true)

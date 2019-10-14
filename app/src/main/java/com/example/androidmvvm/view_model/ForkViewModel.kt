@@ -88,16 +88,6 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
 
     fun definirRepositorio(repositorio: Repositorio) {
 
-        /*forkData.value?.repositorio?.let {
-            Log.i("", "")
-        }.run {
-            Log.i("", "")
-            forkData.postValue(
-                forkData.value?.apply {
-                    this.repositorio = repositorio
-                }
-            )
-        }*/
         if (forkData.value?.repositorio == null) {
             forkData.postValue(
                 forkData.value?.apply {
@@ -110,7 +100,6 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
                 nomeProprietario = repositorio.proprietario.nomeAutor
             )
         }
-
     }
 
     private fun dispararMensagemDeErro(mensagem: String) {

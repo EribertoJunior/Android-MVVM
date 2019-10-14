@@ -48,7 +48,6 @@ dependencies {
     //circleimageview
     implementation "de.hdodenhof:circleimageview:$circleimageview_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_extensions_version"
-    implementation "androidx.paging:paging-runtime:$pagingVersion"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

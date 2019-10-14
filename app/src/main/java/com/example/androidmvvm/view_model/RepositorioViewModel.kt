@@ -32,6 +32,7 @@ class RepositorioViewModel: ViewModel(), LifecycleObserver {
         openLoading()
         isLoading = true
         if (isSwipe) {
+
             repositorioWebClient.getRepositorios(page, object : SearchResultListener<RepositorioDTO> {
                 override fun onSearchResult(result: RepositorioDTO) {
 

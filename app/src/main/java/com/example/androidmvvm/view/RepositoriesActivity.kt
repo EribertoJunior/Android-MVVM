@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -37,6 +38,12 @@ class RepositoriesActivity : AppCompatActivity(), LifecycleOwner {
         //inicialisa a viewModel
         initObservables()
 
+        swipeRefresh_repositorios.setColorSchemeColors(
+            ContextCompat.getColor(this, R.color.colorPrimaryDark),
+            ContextCompat.getColor(this, R.color.colorPrimary),
+            ContextCompat.getColor(this, R.color.colorAccent)
+        )
+
         swipeRefresh_repositorios.setOnRefreshListener {
             //recarrega a primeira pagina
             viewModel.getRepositorios(true)
@@ -57,7 +64,7 @@ class RepositoriesActivity : AppCompatActivity(), LifecycleOwner {
                         startActivity(
                             Intent(this@RepositoriesActivity, ForksActivity::class.java).apply {
                                 putExtra(REPOSITORIO_SELECIONADO, itemSelecionado)
-                        })
+                            })
                     }
                 })
     }
@@ -129,7 +136,6 @@ class RepositoriesActivity : AppCompatActivity(), LifecycleOwner {
                     totalItemCount,
                     findFirstVisibleItemPosition
                 )
-
             }
         })
     }

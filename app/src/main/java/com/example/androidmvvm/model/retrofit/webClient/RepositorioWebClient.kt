@@ -12,9 +12,9 @@ import retrofit2.Response
 class RepositorioWebClient {
     fun getRepositorios(page: Int, callbackResponse: SearchResultListener<RepositorioDTO>) {
 
-        val call = RetrofitConfig().repositorioService().getRepositorios(page = page)
+        //val call = RetrofitConfig().repositorioService().getRepositorios(page = page)
 
-        call.enqueue(object : Callback<RepositorioDTO> {
+        /*call.enqueue(object : Callback<RepositorioDTO> {
             override fun onResponse(
                 call: Call<RepositorioDTO>,
                 response: Response<RepositorioDTO>
@@ -42,6 +42,6 @@ class RepositorioWebClient {
             override fun onFailure(call: Call<RepositorioDTO>, t: Throwable) {
                 callbackResponse.onSearchErro(t.message.toString())
             }
-        })
+        })*/
     }
 }

@@ -36,7 +36,7 @@ dependencies {
     //API Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     // Adapter do Retrofit para retornar objetos observáveis
-    implementation "com.squareup.retrofit2:adapter-rxjava:$retrofit_version"
+    //implementation "com.squareup.retrofit2:adapter-rxjava:$retrofit_version"
     //Converter do Retrofit para utilizar o Gson para tratar a resposta do servidor
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     //Interceptor para visualizar os logs das requisições do Retrofit
@@ -48,6 +48,21 @@ dependencies {
     //circleimageview
     implementation "de.hdodenhof:circleimageview:$circleimageview_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_extensions_version"
+
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$coroutines_adapter_vesion"
+    implementation "com.squareup.retrofit2:converter-moshi:2.4.0"
+    implementation "com.squareup.moshi:moshi:1.8.0"
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
+
+    implementation "org.koin:koin-android:$koin_version"
+    // Koin AndroidX Scope features
+    implementation "org.koin:koin-androidx-scope:$koin_version"
+    // Koin AndroidX ViewModel features
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    // Koin AndroidX Experimental features
+    implementation "org.koin:koin-androidx-ext:$koin_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

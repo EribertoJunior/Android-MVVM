@@ -3,6 +3,7 @@ package com.example.androidmvvm.view.recyclerViewAdapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,16 +12,19 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidmvvm.R
 import com.example.androidmvvm.model.entidades.Fork
+import com.example.androidmvvm.model.interfaces.InteracaoComLista
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_fork.view.*
 
 class AdapterForks(
-    var mList: ArrayList<Fork> = arrayListOf()
+    var mList: ArrayList<Fork> = arrayListOf(),
+    var interacaoComLista: InteracaoComLista<Fork>
 ) : RecyclerView.Adapter<AdapterForks.ViewHolder>() {
 
     private val OnClickListener: View.OnClickListener = View.OnClickListener { view ->
         val fork = view.tag as Fork
-        Intent(fork.autorPR.urlSite)
+        interacaoComLista.selecionou(fork)
+
     }
 
     @SuppressLint("InflateParams")
@@ -47,7 +51,7 @@ class AdapterForks(
                 .into(ivAvatarDonoPR)
         }
 
-        with(holder.view){
+        with(holder.view) {
             tag = fork
             setOnClickListener(OnClickListener)
         }

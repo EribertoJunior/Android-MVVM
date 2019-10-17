@@ -55,6 +55,9 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
+    //shimmer: Api de animação de view de carreamento encontrada em http://facebook.github.io/shimmer-android/
+    implementation "com.facebook.shimmer:shimmer:$shimmer_version"
+
 
     implementation "org.koin:koin-android:$koin_version"
     // Koin AndroidX Scope features

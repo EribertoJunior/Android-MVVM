@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidmvvm.model.entidades.RepositorioDTO
 import com.example.androidmvvm.model.enuns.STATUS
-import com.example.androidmvvm.model.repository_imp.RepoDataRepository
+import com.example.androidmvvm.model.repository.repository_impl.RepoDataRepository
 import kotlinx.coroutines.launch
 
 class RepositorioViewModel : ViewModel(), LifecycleObserver {
@@ -32,6 +32,8 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
 
         repositorioData.value?.let {
 
+            it.proximaPage = if (isSwipe) 1 else it.proximaPage
+
             viewModelScope.launch {
                 val response = RepoDataRepository().getAll(it.proximaPage)
 
@@ -44,7 +46,11 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
                             recarga = isSwipe
                             proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
 
-                            it.items.addAll(repo.items)
+                            if (isSwipe)
+                                items = repo.items
+                            else
+                                items.addAll(repo.items)
+
                         })
                         isLoading = false
                     }

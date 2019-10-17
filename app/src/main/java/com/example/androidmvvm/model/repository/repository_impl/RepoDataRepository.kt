@@ -1,4 +1,4 @@
-package com.example.androidmvvm.model.repository_imp
+package com.example.androidmvvm.model.repository.repository_impl
 
 import com.example.androidmvvm.model.entidades.RepositorioDTO
 import com.example.androidmvvm.model.repository.RepoRepository

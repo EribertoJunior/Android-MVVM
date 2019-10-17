@@ -1,19 +1,19 @@
 package com.example.androidmvvm.view_model
 
-import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.androidmvvm.model.entidades.Fork
 import com.example.androidmvvm.model.entidades.ForkDTO
 import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.enuns.STATUS
-import com.example.androidmvvm.model.interfaces.SearchResultListener
-import com.example.androidmvvm.model.retrofit.webClient.ForkWebClient
+import com.example.androidmvvm.model.repository.repository_impl.ForkDataRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ForkViewModel : ViewModel(), LifecycleObserver {
-
-    private val forkWebClient = ForkWebClient()
 
     val forkData = MutableLiveData(ForkDTO(status = STATUS.OPEN_LOADING))
 
@@ -41,7 +41,42 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
     fun getForks(nomeProprietario: String, nomeRepositorio: String, isSwipe: Boolean = false) {
         openLoading()
         isLoading = true
-        if (isSwipe) {
+
+        forkData.value?.let {
+            it.proximaPage = if (isSwipe) 1 else it.proximaPage
+
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+
+                    val response = ForkDataRepository().getForks(
+                        nomeProprietario = nomeProprietario,
+                        nomeRepositorio = nomeRepositorio,
+                        page = it.proximaPage
+                    )
+                    isLoading = false
+                    if (response.isSuccessful) {
+                        response.body()?.let { list ->
+                            forkData.postValue(forkData.value?.apply {
+                                status = STATUS.SUCCESS
+                                recarga = isSwipe
+                                proximaPage = forkData.value?.proximaPage?.plus(1) ?: 0
+
+                                if (isSwipe)
+                                    itens = list
+                                else
+                                    itens.addAll(list)
+                            })
+                        }
+                    } else {
+                        dispararMensagemDeErro(response.message())
+                    }
+
+                }
+            }
+        }
+
+
+        /*if (isSwipe) {
             forkWebClient.getForks(page = page, nomeProprietario = nomeProprietario,
                 nomeRepositorio = nomeRepositorio,
                 callbackResponse = object : SearchResultListener<ArrayList<Fork>> {
@@ -71,7 +106,7 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
 
                     })
             }
-        }
+        }*/
     }
 
     private fun atualizarForkData(

@@ -9,4 +9,5 @@
     <string name="forks">Forks</string>
     <string name="estrelas">Estrelas</string>
     <string name="title_activity_forks">ForksActivity</string>
+    <string name="ok">OK</string>
 </resources>

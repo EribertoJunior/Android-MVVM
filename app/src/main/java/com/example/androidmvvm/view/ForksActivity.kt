@@ -1,5 +1,7 @@
 package com.example.androidmvvm.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +13,7 @@ import com.example.androidmvvm.R
 import com.example.androidmvvm.model.entidades.Fork
 import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.enuns.STATUS
+import com.example.androidmvvm.model.interfaces.InteracaoComLista
 import com.example.androidmvvm.model.util.KeyPutExtraUtil.REPOSITORIO_SELECIONADO
 import com.example.androidmvvm.view.recyclerViewAdapter.AdapterForks
 import com.example.androidmvvm.view_model.ForkViewModel
@@ -88,7 +91,16 @@ class ForksActivity : AppCompatActivity() {
     }
 
     private fun initAdapter() {
-        adapter = AdapterForks()
+        adapter = AdapterForks(interacaoComLista = object : InteracaoComLista<Fork>{
+            override fun selecionou(itemSelecionado: Fork) {
+                startActivity(
+                    Intent(Intent.ACTION_VIEW).apply {
+                        data = Uri.parse(itemSelecionado.autorPR.urlSite)
+                    }
+                )
+            }
+
+        })
     }
 
     private fun initRecyclerView() {

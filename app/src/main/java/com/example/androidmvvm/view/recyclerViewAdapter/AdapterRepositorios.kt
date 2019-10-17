@@ -7,13 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidmvvm.R
 import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.interfaces.InteracaoComLista
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_repositorio.view.*
+import java.lang.Exception
 
 class AdapterRepositorios(
     private val context: Context,
@@ -54,7 +57,23 @@ class AdapterRepositorios(
                 .resize(50, 50)
                 .centerCrop()
                 .placeholder(it)
-                .into(holder.imageAvatar)
+                .into(holder.imageAvatar, object : Callback{
+                    override fun onSuccess() {
+                        holder.mView.shimmer_view_container.hideShimmer()
+                    }
+
+                    override fun onError(e: Exception?) {
+                        e?.let {error ->
+                            AlertDialog.Builder(holder.mView.context)
+                                .setMessage(error.message)
+                                .setPositiveButton(context.getString(R.string.ok)){ _, _ ->
+                                }
+                                .show()
+                        }
+
+                    }
+
+                })
         }
 
         with(holder.mView) {

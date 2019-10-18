@@ -11,8 +11,4 @@ interface RepositoriosGithubApi {
         @Query("page") page: Int
     ): Response<RepositorioDTO>
 
-    @GET("users/")
-    suspend fun buscarDadosDoProprietario(
-
-    )
 }

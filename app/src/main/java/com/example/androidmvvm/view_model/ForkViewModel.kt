@@ -8,8 +8,12 @@ import com.example.androidmvvm.model.entidades.Fork
 import com.example.androidmvvm.model.entidades.ForkDTO
 import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.enuns.STATUS
+import com.example.androidmvvm.model.repository.ForkRepository
 import com.example.androidmvvm.model.repository.repository_impl.ForkDataRepository
+import com.example.androidmvvm.model.retrofit.api.ForkGithubApi
+import com.example.androidmvvm.model.retrofit.api.ProprietarioGithubApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -48,14 +52,24 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
 
-                    val response = ForkDataRepository().getForks(
-                        nomeProprietario = nomeProprietario,
-                        nomeRepositorio = nomeRepositorio,
-                        page = it.proximaPage
-                    )
-                    isLoading = false
+                    val response = ForkDataRepository().getForks(nomeProprietario = nomeProprietario,nomeRepositorio = nomeRepositorio,page = it.proximaPage)
+
                     if (response.isSuccessful) {
+
                         response.body()?.let { list ->
+
+                            list.forEach { item ->
+
+                                val usuarioData = viewModelScope.async {
+                                    return@async ForkDataRepository().getOwner(item.autorPR.nome)
+                                }
+
+                                val usuario = usuarioData.await()
+
+                                if (usuario.isSuccessful)
+                                    item.autorPR.proprietario = usuario.body() ?: item.autorPR.proprietario
+                            }
+
                             forkData.postValue(forkData.value?.apply {
                                 status = STATUS.SUCCESS
                                 recarga = isSwipe
@@ -70,55 +84,10 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
                     } else {
                         dispararMensagemDeErro(response.message())
                     }
-
+                    isLoading = false
                 }
             }
         }
-
-
-        /*if (isSwipe) {
-            forkWebClient.getForks(page = page, nomeProprietario = nomeProprietario,
-                nomeRepositorio = nomeRepositorio,
-                callbackResponse = object : SearchResultListener<ArrayList<Fork>> {
-                    override fun onSearchResult(result: ArrayList<Fork>) {
-                        atualizarForkData(result, isSwipe)
-                        isLoading = false
-                    }
-
-                    override fun onSearchErro(mensagem: String) {
-                        dispararMensagemDeErro(mensagem)
-                    }
-
-                })
-        } else {
-            forkData.value?.let {
-                forkWebClient.getForks(page = it.proximaPage, nomeProprietario = nomeProprietario,
-                    nomeRepositorio = nomeRepositorio,
-                    callbackResponse = object : SearchResultListener<ArrayList<Fork>> {
-                        override fun onSearchResult(result: ArrayList<Fork>) {
-                            atualizarForkData(result, isSwipe)
-                            isLoading = false
-                        }
-
-                        override fun onSearchErro(mensagem: String) {
-                            dispararMensagemDeErro(mensagem)
-                        }
-
-                    })
-            }
-        }*/
-    }
-
-    private fun atualizarForkData(
-        result: ArrayList<Fork>,
-        isSwipe: Boolean
-    ) {
-        forkData.postValue(forkData.value?.apply {
-            status = STATUS.SUCCESS
-            recarga = isSwipe
-            proximaPage = forkData.value?.proximaPage?.plus(1) ?: 0
-            itens = result
-        })
     }
 
     fun definirRepositorio(repositorio: Repositorio) {

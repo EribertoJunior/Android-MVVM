@@ -43,6 +43,7 @@ class AdapterForks(
             tvTituloPullRequest.text = fork.titulo
             tvDescricaoPullRequest.text = fork.descricao
             tvUserNamePR.text = fork.autorPR.nome
+            tvNomeSobrenomePR.text = fork.autorPR.proprietario.nomeSobrenome
 
             Picasso.get()
                 .load(fork.autorPR.urlFoto)

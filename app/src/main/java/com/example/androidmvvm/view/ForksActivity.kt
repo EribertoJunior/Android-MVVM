@@ -3,6 +3,7 @@ package com.example.androidmvvm.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -69,6 +70,8 @@ class ForksActivity : AppCompatActivity() {
                 }
                 STATUS.ERROR -> {
                     hideLoading()
+                    Toast.makeText(this, it.errorManseger, Toast.LENGTH_LONG).show()
+                    adicionarNovosItens(it.itens)
                 }
                 STATUS.RECARREGAR -> {
 

@@ -9,5 +9,6 @@ class Proprietario(
     var avatar_url: String,
     @SerializedName("url")
     var url:String,
-    var nomeSobrenome:String = ""
+    @SerializedName("name")
+    var nomeSobrenome:String?
 ) : Serializable

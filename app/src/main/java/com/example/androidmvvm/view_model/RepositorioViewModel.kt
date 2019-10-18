@@ -4,10 +4,15 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.androidmvvm.model.entidades.Proprietario
 import com.example.androidmvvm.model.entidades.RepositorioDTO
 import com.example.androidmvvm.model.enuns.STATUS
 import com.example.androidmvvm.model.repository.repository_impl.RepoDataRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Response
 
 class RepositorioViewModel : ViewModel(), LifecycleObserver {
 
@@ -30,32 +35,46 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
         openLoading()
         isLoading = true
 
-        repositorioData.value?.let {
+        repositorioData.value?.let { repoDTO ->
 
-            it.proximaPage = if (isSwipe) 1 else it.proximaPage
+            repoDTO.proximaPage = if (isSwipe) 1 else repoDTO.proximaPage
 
             viewModelScope.launch {
-                val response = RepoDataRepository().getAll(it.proximaPage)
+                withContext(Dispatchers.IO) {
+                    val response = RepoDataRepository().getAll(repoDTO.proximaPage)
 
-                if (response.isSuccessful) {
-                    val result = response.body()
+                    if (response.isSuccessful) {
+                        val result = response.body()
 
-                    result?.let { repo ->
-                        repositorioData.postValue(repositorioData.value?.apply {
-                            status = STATUS.SUCCESS
-                            recarga = isSwipe
-                            proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+                        result?.let { repo ->
+                            repo.items.forEach { item ->
+                                val proprietarioData = viewModelScope.async {
+                                    return@async RepoDataRepository().getOwner(item.proprietario.nomeAutor)
+                                }
 
-                            if (isSwipe)
-                                items = repo.items
-                            else
-                                items.addAll(repo.items)
+                                val proprietario: Response<Proprietario> = proprietarioData.await()
 
-                        })
-                        isLoading = false
+                                if (proprietario.isSuccessful) {
+                                    item.proprietario = proprietario.body() ?: item.proprietario
+                                }
+                            }
+
+                            repositorioData.postValue(repositorioData.value?.apply {
+                                status = STATUS.SUCCESS
+                                recarga = isSwipe
+                                proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+
+                                if (isSwipe)
+                                    items = repo.items
+                                else
+                                    items.addAll(repo.items)
+
+                            })
+                            isLoading = false
+                        }
+                    } else {
+                        dispararMensagemDeErro(response.message())
                     }
-                } else {
-                    dispararMensagemDeErro(response.message())
                 }
             }
         }

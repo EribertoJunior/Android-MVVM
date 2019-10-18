@@ -1,6 +1,7 @@
 package com.example.androidmvvm.model.retrofit
 
 import com.example.androidmvvm.model.retrofit.api.ForkGithubApi
+import com.example.androidmvvm.model.retrofit.api.ProprietarioGithubApi
 import com.example.androidmvvm.model.retrofit.api.RepositoriosGithubApi
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
@@ -20,6 +21,8 @@ class RetrofitConfig {
         .build()
 
     fun repositorioService() = retrofit.create(RepositoriosGithubApi::class.java)
+
+    fun proprietarioService() = retrofit.create(ProprietarioGithubApi::class.java)
 
     fun forkService() = retrofit.create(ForkGithubApi::class.java)
 }

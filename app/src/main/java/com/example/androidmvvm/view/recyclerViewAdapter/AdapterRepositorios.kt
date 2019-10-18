@@ -50,6 +50,7 @@ class AdapterRepositorios(
         holder.tvUserName.text = repositorio.proprietario.nomeAutor
         holder.tvNumeroForks.text = repositorio.quantidadeDeForks.toString()
         holder.tvNumeroStars.text = repositorio.quantidadeDeEstrelas.toString()
+        holder.tvNomeSobrenomePR.text = repositorio.proprietario.nomeSobrenome
 
         ContextCompat.getDrawable(context, R.mipmap.image_placeholder_350x350)?.let {
             Picasso.get()
@@ -89,5 +90,6 @@ class AdapterRepositorios(
         var tvNumeroStars: TextView = mView.tvNumeroStars
         var tvUserName: TextView = mView.tvUserNamePR
         var imageAvatar: ImageView = mView.imageAvatar
+        var tvNomeSobrenomePR: TextView = mView.tvNomeSobrenomePR
     }
 }

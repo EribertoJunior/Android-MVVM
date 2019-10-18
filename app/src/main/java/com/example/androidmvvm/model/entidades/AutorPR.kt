@@ -8,5 +8,8 @@ class AutorPR(
     @SerializedName("avatar_url")
     var urlFoto: String,
     @SerializedName("html_url")
-    var urlSite: String
+    var urlSite: String,
+    @SerializedName("url")
+    var url: String,
+    var proprietario: Proprietario
 )

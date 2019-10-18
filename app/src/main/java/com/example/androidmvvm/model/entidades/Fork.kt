@@ -1,6 +1,7 @@
 package com.example.androidmvvm.model.entidades
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 class Fork(
     @SerializedName("user")
@@ -11,4 +12,5 @@ class Fork(
     var descricao: String,
     @SerializedName("head")
     var cabecalho: Cabecalho
-)
+
+): Serializable

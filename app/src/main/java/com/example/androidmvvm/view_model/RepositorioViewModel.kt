@@ -1,5 +1,6 @@
 package com.example.androidmvvm.view_model
 
+import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,10 +9,13 @@ import com.example.androidmvvm.model.entidades.Proprietario
 import com.example.androidmvvm.model.entidades.RepositorioDTO
 import com.example.androidmvvm.model.enuns.STATUS
 import com.example.androidmvvm.model.repository.repository_impl.RepoDataRepository
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Response
 
 class RepositorioViewModel : ViewModel(), LifecycleObserver {
@@ -56,6 +60,15 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
 
                                 if (proprietario.isSuccessful) {
                                     item.proprietario = proprietario.body() ?: item.proprietario
+                                } else {
+                                    proprietario.errorBody()?.let {
+                                        val error = JSONObject(it.string()).get("message")
+                                            .toString()
+
+                                        Log.e("OPS", error)
+                                        //dispararMensagemDeErro(error)
+                                    }
+                                    return@forEach
                                 }
                             }
 

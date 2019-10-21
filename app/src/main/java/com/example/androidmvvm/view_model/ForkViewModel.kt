@@ -1,5 +1,6 @@
 package com.example.androidmvvm.view_model
 
+import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 class ForkViewModel : ViewModel(), LifecycleObserver {
 
@@ -66,8 +68,17 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
 
                                 val usuario = usuarioData.await()
 
-                                if (usuario.isSuccessful)
+                                if (usuario.isSuccessful){
                                     item.autorPR.proprietario = usuario.body() ?: item.autorPR.proprietario
+                                }else{
+                                    usuario.errorBody()?.let {usuarioError ->
+                                        val error = JSONObject(usuarioError.string()).get("message")
+                                            .toString()
+                                        Log.e("OPS", error)
+                                        //dispararMensagemDeErro(error)
+                                    }
+                                    return@forEach
+                                }
                             }
 
                             forkData.postValue(forkData.value?.apply {

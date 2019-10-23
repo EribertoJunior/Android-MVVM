@@ -5,14 +5,10 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.androidmvvm.model.entidades.Fork
 import com.example.androidmvvm.model.entidades.ForkDTO
 import com.example.androidmvvm.model.entidades.Repositorio
 import com.example.androidmvvm.model.enuns.STATUS
-import com.example.androidmvvm.model.repository.ForkRepository
 import com.example.androidmvvm.model.repository.repository_impl.ForkDataRepository
-import com.example.androidmvvm.model.retrofit.api.ForkGithubApi
-import com.example.androidmvvm.model.retrofit.api.ProprietarioGithubApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch

@@ -4,7 +4,6 @@ import com.example.androidmvvm.model.entidades.Proprietario
 import com.example.androidmvvm.model.entidades.RepositorioDTO
 import com.example.androidmvvm.model.repository.RepoRepository
 import com.example.androidmvvm.model.retrofit.RetrofitConfig
-import kotlinx.coroutines.Deferred
 import retrofit2.Response
 
 class RepoDataRepository : RepoRepository {

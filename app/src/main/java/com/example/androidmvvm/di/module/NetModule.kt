@@ -2,7 +2,6 @@ package com.example.androidmvvm.di.module
 
 import com.example.androidmvvm.model.repository.repository_impl.ForkDataRepository
 import com.example.androidmvvm.model.repository.repository_impl.RepoDataRepository
-import com.example.androidmvvm.model.retrofit.api.RepositoriosGithubApi
 import com.example.androidmvvm.view_model.ForkViewModel
 import com.example.androidmvvm.view_model.RepositorioViewModel
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory

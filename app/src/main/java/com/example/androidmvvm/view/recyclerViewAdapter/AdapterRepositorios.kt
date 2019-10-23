@@ -16,7 +16,6 @@ import com.example.androidmvvm.model.interfaces.InteracaoComLista
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_repositorio.view.*
-import java.lang.Exception
 
 class AdapterRepositorios(
     private val context: Context,

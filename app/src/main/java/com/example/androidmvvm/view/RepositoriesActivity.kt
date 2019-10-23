@@ -19,12 +19,11 @@ import com.example.androidmvvm.model.util.KeyPutExtraUtil.REPOSITORIO_SELECIONAD
 import com.example.androidmvvm.view.recyclerViewAdapter.AdapterRepositorios
 import com.example.androidmvvm.view_model.RepositorioViewModel
 import kotlinx.android.synthetic.main.content_repositories.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RepositoriesActivity : AppCompatActivity(), LifecycleOwner {
 
-    private val viewModel by lazy {
-        ViewModelProviders.of(this).get(RepositorioViewModel::class.java)
-    }
+    private val viewModel: RepositorioViewModel by viewModel()
 
     private lateinit var adapter: AdapterRepositorios
 
@@ -38,17 +37,18 @@ class RepositoriesActivity : AppCompatActivity(), LifecycleOwner {
         //inicialisa a viewModel
         initObservables()
 
-        swipeRefresh_repositorios.setColorSchemeColors(
-            ContextCompat.getColor(this, R.color.colorPrimaryDark),
-            ContextCompat.getColor(this, R.color.colorPrimary),
-            ContextCompat.getColor(this, R.color.colorAccent)
-        )
+        swipeRefresh_repositorios.apply {
+            setOnRefreshListener {
+                //recarrega a primeira pagina
+                viewModel.getRepositorios(true)
+            }
 
-        swipeRefresh_repositorios.setOnRefreshListener {
-            //recarrega a primeira pagina
-            viewModel.getRepositorios(true)
+            setColorSchemeColors(
+                ContextCompat.getColor(this@RepositoriesActivity, R.color.colorPrimaryDark),
+                ContextCompat.getColor(this@RepositoriesActivity, R.color.colorPrimary),
+                ContextCompat.getColor(this@RepositoriesActivity, R.color.colorAccent)
+            )
         }
-
 
         //Amarra o ciclo de vida do livedata ao ciclo de vida da activity
         lifecycle.addObserver(viewModel)

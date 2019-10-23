@@ -9,16 +9,15 @@ import com.example.androidmvvm.model.entidades.Proprietario
 import com.example.androidmvvm.model.entidades.RepositorioDTO
 import com.example.androidmvvm.model.enuns.STATUS
 import com.example.androidmvvm.model.repository.repository_impl.RepoDataRepository
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Response
 
-class RepositorioViewModel : ViewModel(), LifecycleObserver {
+class RepositorioViewModel(private val repoDataRepository: RepoDataRepository) : ViewModel(),
+    LifecycleObserver {
 
     val repositorioData: MutableLiveData<RepositorioDTO> =
         MutableLiveData(RepositorioDTO(status = STATUS.OPEN_LOADING))
@@ -45,7 +44,7 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
 
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
-                    val response = RepoDataRepository().getAll(repoDTO.proximaPage)
+                    val response = repoDataRepository.getAll(repoDTO.proximaPage)
 
                     if (response.isSuccessful) {
                         val result = response.body()
@@ -53,7 +52,7 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
                         result?.let { repo ->
                             repo.items.forEach { item ->
                                 val proprietarioData = viewModelScope.async {
-                                    return@async RepoDataRepository().getOwner(item.proprietario.nomeAutor)
+                                    return@async repoDataRepository.getOwner(item.proprietario.nomeAutor)
                                 }
 
                                 val proprietario: Response<Proprietario> = proprietarioData.await()

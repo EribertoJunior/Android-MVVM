@@ -19,11 +19,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
-class ForkViewModel : ViewModel(), LifecycleObserver {
+class ForkViewModel(private val forkDataRepository: ForkDataRepository) : ViewModel(),
+    LifecycleObserver {
 
     val forkData = MutableLiveData(ForkDTO(status = STATUS.OPEN_LOADING))
 
-    private val page = 1
     private var isLoading = false
 
     init {
@@ -54,7 +54,11 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
 
-                    val response = ForkDataRepository().getForks(nomeProprietario = nomeProprietario,nomeRepositorio = nomeRepositorio,page = it.proximaPage)
+                    val response = forkDataRepository.getForks(
+                        nomeProprietario = nomeProprietario,
+                        nomeRepositorio = nomeRepositorio,
+                        page = it.proximaPage
+                    )
 
                     if (response.isSuccessful) {
 
@@ -63,15 +67,16 @@ class ForkViewModel : ViewModel(), LifecycleObserver {
                             list.forEach { item ->
 
                                 val usuarioData = viewModelScope.async {
-                                    return@async ForkDataRepository().getOwner(item.autorPR.nome)
+                                    return@async forkDataRepository.getOwner(item.autorPR.nome)
                                 }
 
                                 val usuario = usuarioData.await()
 
-                                if (usuario.isSuccessful){
-                                    item.autorPR.proprietario = usuario.body() ?: item.autorPR.proprietario
-                                }else{
-                                    usuario.errorBody()?.let {usuarioError ->
+                                if (usuario.isSuccessful) {
+                                    item.autorPR.proprietario =
+                                        usuario.body() ?: item.autorPR.proprietario
+                                } else {
+                                    usuario.errorBody()?.let { usuarioError ->
                                         val error = JSONObject(usuarioError.string()).get("message")
                                             .toString()
                                         Log.e("OPS", error)

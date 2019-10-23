@@ -4,10 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidmvvm.R
@@ -18,15 +17,13 @@ import com.example.androidmvvm.model.interfaces.InteracaoComLista
 import com.example.androidmvvm.model.util.KeyPutExtraUtil.REPOSITORIO_SELECIONADO
 import com.example.androidmvvm.view.recyclerViewAdapter.AdapterForks
 import com.example.androidmvvm.view_model.ForkViewModel
-
 import kotlinx.android.synthetic.main.activity_forks.*
 import kotlinx.android.synthetic.main.content_forks.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ForksActivity : AppCompatActivity() {
 
-    private val viewModel by lazy {
-        ViewModelProviders.of(this).get(ForkViewModel::class.java)
-    }
+    private val viewModel: ForkViewModel by viewModel()
 
     private lateinit var adapter: AdapterForks
 
@@ -48,10 +45,20 @@ class ForksActivity : AppCompatActivity() {
             return
         }
 
+        swipeRefresh_fork.apply {
+            setColorSchemeColors(
+                ContextCompat.getColor(this@ForksActivity, R.color.colorPrimaryDark),
+                ContextCompat.getColor(this@ForksActivity, R.color.colorPrimary),
+                ContextCompat.getColor(this@ForksActivity, R.color.colorAccent)
+            )
 
-
-        swipeRefresh_fork.setOnRefreshListener {
-            viewModel.getForks(nomeProprietario = repositorio.nomeRepositorio, nomeRepositorio = repositorio.proprietario.nomeAutor, isSwipe = true)
+            setOnRefreshListener {
+                viewModel.getForks(
+                    nomeProprietario = repositorio.nomeRepositorio,
+                    nomeRepositorio = repositorio.proprietario.nomeAutor,
+                    isSwipe = true
+                )
+            }
         }
     }
 
@@ -94,7 +101,7 @@ class ForksActivity : AppCompatActivity() {
     }
 
     private fun initAdapter() {
-        adapter = AdapterForks(interacaoComLista = object : InteracaoComLista<Fork>{
+        adapter = AdapterForks(interacaoComLista = object : InteracaoComLista<Fork> {
             override fun selecionou(itemSelecionado: Fork) {
                 startActivity(
                     Intent(Intent.ACTION_VIEW).apply {
@@ -110,7 +117,8 @@ class ForksActivity : AppCompatActivity() {
         recyclerViewForks.adapter = adapter
         recyclerViewForks.layoutManager = LinearLayoutManager(this)
 
-        val layoutManager: LinearLayoutManager = recyclerViewForks.layoutManager as LinearLayoutManager
+        val layoutManager: LinearLayoutManager =
+            recyclerViewForks.layoutManager as LinearLayoutManager
 
         recyclerViewForks.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

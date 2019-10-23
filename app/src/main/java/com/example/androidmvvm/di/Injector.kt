@@ -1,7 +1,7 @@
 package com.example.androidmvvm.di
 
 import android.app.Application
-import com.example.androidmvvm.di.module.netModule
+import com.example.androidmvvm.di.module.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -24,7 +24,7 @@ fun Application.setUpDI(){
              * para novos modulos, criá-los em `modules/` e registrá-los abaixo
              */
             listOf(
-                netModule
+                appModule
             )
         )
 

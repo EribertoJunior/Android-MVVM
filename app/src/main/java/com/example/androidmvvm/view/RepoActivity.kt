@@ -19,7 +19,7 @@ import com.example.androidmvvm.view_model.RepositorioViewModel
 import kotlinx.android.synthetic.main.content_repositories.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class RepositoriesActivity : AppCompatActivity(), LifecycleOwner {
+class RepoActivity : AppCompatActivity(), LifecycleOwner {
 
     private val viewModel: RepositorioViewModel by viewModel()
 
@@ -42,9 +42,9 @@ class RepositoriesActivity : AppCompatActivity(), LifecycleOwner {
             }
 
             setColorSchemeColors(
-                ContextCompat.getColor(this@RepositoriesActivity, R.color.colorPrimaryDark),
-                ContextCompat.getColor(this@RepositoriesActivity, R.color.colorPrimary),
-                ContextCompat.getColor(this@RepositoriesActivity, R.color.colorAccent)
+                ContextCompat.getColor(this@RepoActivity, R.color.colorPrimaryDark),
+                ContextCompat.getColor(this@RepoActivity, R.color.colorPrimary),
+                ContextCompat.getColor(this@RepoActivity, R.color.colorAccent)
             )
         }
 
@@ -60,7 +60,7 @@ class RepositoriesActivity : AppCompatActivity(), LifecycleOwner {
                     override fun selecionou(itemSelecionado: Repositorio) {
 
                         startActivity(
-                            Intent(this@RepositoriesActivity, ForksActivity::class.java).apply {
+                            Intent(this@RepoActivity, ForksActivity::class.java).apply {
                                 putExtra(REPOSITORIO_SELECIONADO, itemSelecionado)
                             })
                     }

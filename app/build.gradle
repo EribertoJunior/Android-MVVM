@@ -39,12 +39,14 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     //Interceptor para visualizar os logs das requisições do Retrofit
     implementation "com.squareup.okhttp3:logging-interceptor:$logging_interceptor_version"
+
     //PICASSO: usado para dawnload e tratamento de imagens
     implementation "com.squareup.picasso:picasso:$picasso_version"
     //circleimageview
     implementation "de.hdodenhof:circleimageview:$circleimageview_version"
     //Coroutines adapter usado na configuração do retrofit
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$coroutines_adapter_vesion"
+
     //shimmer: Api de animação de view de carreamento encontrada em http://facebook.github.io/shimmer-android/
     implementation "com.facebook.shimmer:shimmer:$shimmer_version"
 
@@ -61,13 +63,15 @@ dependencies {
     implementation "org.koin:koin-androidx-ext:$koin_version"
 
     testImplementation 'junit:junit:4.12'
-    //Mock Web Server para testes unitarios
-    testImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver_version"
+
+//    //Mock Web Server para testes unitarios
+//    testImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver_version"
 
     //Mock Web Server para testes unitarios
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver_version"
     //Mirror permite alterar a url da nossa classe Api para simular localhost para os testes
     androidTestImplementation "net.vidageek:mirror:$mirror_version"
+
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"

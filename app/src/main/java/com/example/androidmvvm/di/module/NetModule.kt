@@ -24,11 +24,13 @@ val appModule = module {
     }
 
     factory<HttpLoggingInterceptor> {
-        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
     }
 
     factory<OkHttpClient> {
-        OkHttpClient.Builder().addInterceptor(get()).build()
+        OkHttpClient.Builder().addInterceptor(get<HttpLoggingInterceptor>()).build()
     }
 
     single {

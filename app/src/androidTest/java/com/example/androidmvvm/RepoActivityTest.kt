@@ -1,27 +1,33 @@
 package com.example.androidmvvm
 
+import android.content.Intent
+import android.util.Log
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.example.androidmvvm.model.repository.repository_impl.RepoDataRepository
+import com.example.androidmvvm.model.retrofit.api.RepositoriosGithubApi
 import com.example.androidmvvm.view.RepoActivity
+import com.google.gson.stream.JsonReader
 import net.vidageek.mirror.dsl.Mirror
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.After
-import org.junit.Before
-import java.io.IOException
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.Retrofit
-import okhttp3.logging.HttpLoggingInterceptor
-
-
+import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
+import java.io.FileReader
+import java.io.IOException
 
 
 @RunWith(AndroidJUnit4::class)
@@ -37,6 +43,7 @@ class RepoActivityTest {
     fun setUp() {
         server = MockWebServer()
         server.start()
+        setupServerUrl()
     }
 
     @After
@@ -60,7 +67,7 @@ class RepoActivityTest {
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
-            .create<RepoDataRepository>(RepoDataRepository::class.java)
+            .create(RepositoriosGithubApi::class.java)
 
         setField(usersApi, "api", api)
     }
@@ -79,5 +86,17 @@ class RepoActivityTest {
         onView(withId(R.id.swipeRefresh_repositorios)).check(matches(isDisplayed()))
     }
 
+    @Test
+    fun whenResultIsOk_shouldDisplayListWithRepositores(){
+        Log.d("Assets", loadContent("mock_repo_respose_ok.json"))
+        server.enqueue(MockResponse().setResponseCode(200).setBody(loadContent("mock_repo_respose_ok.json")))
+        //mActivityRule.launchActivity(Intent())
+        onView(withId(R.id.recyclerViewRepositorios)).check(matches(isDisplayed()))
+    }
+
+    private fun loadContent(asset: String): String {
+        val assets = InstrumentationRegistry.getInstrumentation().context.assets
+        return assets.open(asset).reader().readText()
+    }
 
 }

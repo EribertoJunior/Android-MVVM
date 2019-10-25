@@ -34,7 +34,7 @@ ext {
     lifecycle_version = "2.1.0"
     pagingVersion = '2.1.0'
     retrofit_version = '2.6.0'
-    logging_interceptor_version = '3.12.3'
+    logging_interceptor_version = '4.2.1'
     gson_version = '2.8.5'
     picasso_version = '2.71828'
     circleimageview_version = '3.0.0'

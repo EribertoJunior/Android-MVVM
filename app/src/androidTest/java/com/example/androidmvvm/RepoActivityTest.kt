@@ -1,21 +1,12 @@
 package com.example.androidmvvm
 
-import android.content.Intent
-import android.util.Log
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.androidmvvm.model.repository.repository_impl.RepoDataRepository
-import com.example.androidmvvm.model.retrofit.api.RepositoriosGithubApi
 import com.example.androidmvvm.view.RepoActivity
-import com.google.gson.stream.JsonReader
-import net.vidageek.mirror.dsl.Mirror
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -23,10 +14,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.io.File
-import java.io.FileReader
 import java.io.IOException
 
 
@@ -36,49 +23,27 @@ class RepoActivityTest {
     @get:Rule
     val mActivityRule = IntentsTestRule(RepoActivity::class.java, false, true)
 
-    private var server = MockWebServer()
+    private var mockWebServer = MockWebServer()
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
-        server = MockWebServer()
-        server.start()
-        setupServerUrl()
+        mockWebServer = MockWebServer()
+        //mockWebServer.start()
+        //setupServerUrl()
     }
 
     @After
     @Throws(IOException::class)
     fun tearDown() {
-        server.shutdown()
+        mockWebServer.shutdown()
     }
 
     private fun setupServerUrl() {
-        val url = server.url("/").toString()
+        val url = mockWebServer.url("/").toString()
 
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
-
-        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-
-        val usersApi = RepoDataRepository()
-
-        val api = Retrofit.Builder()
-            .baseUrl(url)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
-            .create(RepositoriosGithubApi::class.java)
-
-        setField(usersApi, "api", api)
     }
 
-    private fun setField(target: Any, fieldName: String, value: Any) {
-        Mirror()
-            .on(target)
-            .set()
-            .field(fieldName)
-            .withValue(value)
-    }
 
     @Test
     fun givenInitialState_when_shold() {
@@ -87,15 +52,37 @@ class RepoActivityTest {
     }
 
     @Test
-    fun whenResultIsOk_shouldDisplayListWithRepositores(){
-        Log.d("Assets", loadContent("mock_repo_respose_ok.json"))
-        server.enqueue(MockResponse().setResponseCode(200).setBody(loadContent("mock_repo_respose_ok.json")))
-        //mActivityRule.launchActivity(Intent())
-        onView(withId(R.id.recyclerViewRepositorios)).check(matches(isDisplayed()))
+    fun whenResultIsOk_shouldDisplayListWithRepositores() {
+        val json = loadContent("mock_repo_respose_ok.json")
+
+        mockWebServer.url("/")
+        mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(json))
+        mockWebServer.start()
+
+        val request = mockWebServer.takeRequest()
+
+        assert(request.body.equals(loadContent(json)))
+
+//        onView(withId(R.id.recyclerViewRepositorios)).check(matches(isDisplayed()))
+
     }
+
+    /*@Test
+    fun testLoadLibraryWithOnePlatformAndOneOwner() {
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody("mockjson/library/detail_game_success.json".getJson())
+        )
+
+        onView(withId(R.id.tvGameName)).check(matches(isDisplayed()))
+        onView(withId(R.id.tvGameName)).check(matches(withText("Jogo XPTO")))
+        onView(withId(R.id.btPerformLoan)).check(matches(isEnabled()))
+    }*/
 
     private fun loadContent(asset: String): String {
         val assets = InstrumentationRegistry.getInstrumentation().context.assets
+
         return assets.open(asset).reader().readText()
     }
 

@@ -2,6 +2,7 @@ package com.example.androidmvvm.di.module
 
 import com.example.androidmvvm.model.repository.repository_impl.ForkDataRepository
 import com.example.androidmvvm.model.repository.repository_impl.RepoDataRepository
+import com.example.androidmvvm.model.retrofit.RetrofitConfig
 import com.example.androidmvvm.view_model.ForkViewModel
 import com.example.androidmvvm.view_model.RepositorioViewModel
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -12,15 +13,13 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+const val PROPERTIES_BASE_URL = "BASE_URL"
+
 val appModule = module {
 
-    factory<Retrofit> {
-        Retrofit.Builder()
-            .baseUrl("https://api.github.com/")
-            .client(get())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    factory{
+        val baseUrl = getProperty<String>(PROPERTIES_BASE_URL)
+        RetrofitConfig(baseUrl)
     }
 
     factory<HttpLoggingInterceptor> {
@@ -33,11 +32,11 @@ val appModule = module {
         OkHttpClient.Builder().addInterceptor(get<HttpLoggingInterceptor>()).build()
     }
 
-    single {
-        RepoDataRepository()
+    single{
+        RepoDataRepository(get())
     }
     single {
-        ForkDataRepository()
+        ForkDataRepository(get())
     }
 
     viewModel {

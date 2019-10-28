@@ -50,7 +50,7 @@ class RepositorioViewModel(private val repoDataRepository: RepoDataRepository) :
                         val result = response.body()
 
                         result?.let { repo ->
-                            repo.items.forEach { item ->
+                            /*repo.items.forEach { item ->
                                 val proprietarioData = viewModelScope.async {
                                     return@async repoDataRepository.getOwner(item.proprietario.nomeAutor)
                                 }
@@ -69,7 +69,7 @@ class RepositorioViewModel(private val repoDataRepository: RepoDataRepository) :
                                     }
                                     return@forEach
                                 }
-                            }
+                            }*/
 
                             repositorioData.postValue(repositorioData.value?.apply {
                                 status = STATUS.SUCCESS

@@ -6,16 +6,16 @@ import com.example.androidmvvm.model.repository.ForkRepository
 import com.example.androidmvvm.model.retrofit.RetrofitConfig
 import retrofit2.Response
 
-class ForkDataRepository : ForkRepository {
+class ForkDataRepository(private val retrofitConfig: RetrofitConfig) : ForkRepository {
     override suspend fun getForks(
         nomeProprietario: String,
         nomeRepositorio: String,
         page: Int
     ): Response<ArrayList<Fork>> {
-        return RetrofitConfig().forkService().getForks(nomeProprietario, nomeRepositorio, page)
+        return retrofitConfig.forkService().getForks(nomeProprietario, nomeRepositorio, page)
     }
 
     override suspend fun getOwner(login: String): Response<Proprietario> {
-        return RetrofitConfig().proprietarioService().buscarDadosDoProprietario(login)
+        return retrofitConfig.proprietarioService().buscarDadosDoProprietario(login)
     }
 }

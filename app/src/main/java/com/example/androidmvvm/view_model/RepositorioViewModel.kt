@@ -50,26 +50,6 @@ class RepositorioViewModel(private val repoDataRepository: RepoDataRepository) :
                         val result = response.body()
 
                         result?.let { repo ->
-                            /*repo.items.forEach { item ->
-                                val proprietarioData = viewModelScope.async {
-                                    return@async repoDataRepository.getOwner(item.proprietario.nomeAutor)
-                                }
-
-                                val proprietario: Response<Proprietario> = proprietarioData.await()
-
-                                if (proprietario.isSuccessful) {
-                                    item.proprietario = proprietario.body() ?: item.proprietario
-                                } else {
-                                    proprietario.errorBody()?.let {
-                                        val error = JSONObject(it.string()).get("message")
-                                            .toString()
-
-                                        Log.e("OPS", error)
-                                        //dispararMensagemDeErro(error)
-                                    }
-                                    return@forEach
-                                }
-                            }*/
 
                             repositorioData.postValue(repositorioData.value?.apply {
                                 status = STATUS.SUCCESS
@@ -100,9 +80,7 @@ class RepositorioViewModel(private val repoDataRepository: RepoDataRepository) :
     }
 
     fun buscarMaisItens(visibleItemCount: Int, totalItemCount: Int, firstVisibleItemPosition: Int) {
-        if (((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                    && firstVisibleItemPosition >= 0) && !isLoading
-        ) {
+        if (((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) && !isLoading) {
             getRepositorios()
         }
     }

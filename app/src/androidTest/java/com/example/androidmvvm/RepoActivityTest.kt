@@ -8,7 +8,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.androidmvvm.view.RepoActivity
-import junit.framework.Assert.assertEquals
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -20,7 +19,6 @@ import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class RepoActivityTest {
-
 
     private val mockWebServer: MockWebServer = MockWebServer()
 
@@ -55,27 +53,8 @@ class RepoActivityTest {
 
     @Test
     fun whenResultIsOk_shouldDisplayListWithRepositores() {
-        val json = loadContent("mock_repo_response_ok.json")
 
-        mockWebServer.enqueue(MockResponse().setResponseCode(200).setBody(json))
-
-        val request = mockWebServer.takeRequest()
-
-        assertEquals(request.body, json)
     }
-
-    /*@Test
-    fun testLoadLibraryWithOnePlatformAndOneOwner() {
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody("mockjson/library/detail_game_success.json".getJson())
-        )
-
-        onView(withId(R.id.tvGameName)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvGameName)).check(matches(withText("Jogo XPTO")))
-        onView(withId(R.id.btPerformLoan)).check(matches(isEnabled()))
-    }*/
 
     private fun loadContent(asset: String): String {
         val assets = InstrumentationRegistry.getInstrumentation().context.assets

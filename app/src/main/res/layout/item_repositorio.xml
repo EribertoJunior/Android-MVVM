@@ -5,52 +5,59 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageAvatar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_view_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
-        app:civ_border_color="#FF000000"
-        app:civ_border_width="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@drawable/ic_launcher_background" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageAvatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="0dp"
+            tools:src="@drawable/ic_launcher_background" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
 
     <TextView
-        android:id="@+id/tvUserName"
+        android:id="@+id/tvUserNamePR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        tools:text="TextView"
         android:textColor="@color/azul"
-        app:layout_constraintEnd_toEndOf="@+id/imageAvatar"
-        app:layout_constraintStart_toStartOf="@+id/imageAvatar"
-        app:layout_constraintTop_toBottomOf="@+id/imageAvatar" />
+        app:layout_constraintEnd_toEndOf="@+id/shimmer_view_container"
+        app:layout_constraintStart_toStartOf="@+id/shimmer_view_container"
+        app:layout_constraintTop_toBottomOf="@+id/shimmer_view_container"
+        tools:text="TextView" />
 
     <TextView
-        android:id="@+id/tvNomeSobrenome"
+        android:id="@+id/tvNomeSobrenomePR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        tools:text="TextView"
+        android:layout_marginTop="4dp"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/tvUserName"
-        app:layout_constraintStart_toStartOf="@+id/tvUserName"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserName" />
+        app:layout_constraintEnd_toEndOf="@+id/tvUserNamePR"
+        app:layout_constraintStart_toStartOf="@+id/tvUserNamePR"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserNamePR"
+        tools:text="TextView" />
 
     <TextView
         android:id="@+id/tvNomerepositorio"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="32dp"
         android:textColor="@color/azul"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/imageAvatar"
+        app:layout_constraintEnd_toStartOf="@+id/shimmer_view_container"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageAvatar"
+        app:layout_constraintTop_toTopOf="@+id/shimmer_view_container"
         tools:text="Nome Repositório" />
 
     <TextView
@@ -58,6 +65,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@android:color/black"
         android:textSize="12sp"
@@ -68,11 +76,11 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginTop="16dp"
+        android:contentDescription="@string/forks"
         android:tint="@color/amarelo"
-        android:contentDescription="Forks"
         app:layout_constraintStart_toStartOf="@+id/tvDescricaoRepositorio"
         app:layout_constraintTop_toBottomOf="@+id/tvDescricaoRepositorio"
         app:srcCompat="@drawable/source_fork" />
@@ -83,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textColor="@color/amarelo"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -92,11 +100,11 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:contentDescription="@string/estrelas"
         android:tint="@color/amarelo"
-        android:contentDescription="Estrelas"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintStart_toEndOf="@+id/tvNumeroForks"
         app:layout_constraintTop_toTopOf="@+id/imageView"
@@ -108,7 +116,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textColor="@color/amarelo"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
@@ -123,5 +131,5 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNomeSobrenome" />
+        app:layout_constraintTop_toBottomOf="@+id/tvNomeSobrenomePR" />
 </androidx.constraintlayout.widget.ConstraintLayout>

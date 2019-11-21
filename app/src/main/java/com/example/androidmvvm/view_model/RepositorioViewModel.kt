@@ -1,20 +1,28 @@
 package com.example.androidmvvm.view_model
 
+import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.androidmvvm.model.entidades.Repositorio
+import androidx.lifecycle.viewModelScope
+import com.example.androidmvvm.model.entidades.Proprietario
 import com.example.androidmvvm.model.entidades.RepositorioDTO
-import com.example.androidmvvm.model.interfaces.SearchResultListener
-import com.example.androidmvvm.model.retrofit.webClient.RepositorioWebClient
+import com.example.androidmvvm.model.enuns.STATUS
+import com.example.androidmvvm.model.repository.repository_impl.RepoDataRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import retrofit2.Response
 
-class RepositorioViewModel : ViewModel(), LifecycleObserver {
+class RepositorioViewModel(private val repoDataRepository: RepoDataRepository) : ViewModel(),
+    LifecycleObserver {
 
-    private val repositorioWebClient = RepositorioWebClient()
     val repositorioData: MutableLiveData<RepositorioDTO> =
-        MutableLiveData(RepositorioDTO(status = RepositorioDTO.STATUS.OPEN_LOADING))
+        MutableLiveData(RepositorioDTO(status = STATUS.OPEN_LOADING))
 
-    private val page = 1
+    private var isLoading = false
 
     companion object {
         private const val VISIBLE_THRESHOLD = 5
@@ -26,72 +34,59 @@ class RepositorioViewModel : ViewModel(), LifecycleObserver {
 
     fun openLoading() {
         repositorioData.postValue(repositorioData.value?.apply {
-            this.status = RepositorioDTO.STATUS.OPEN_LOADING
+            this.status = STATUS.OPEN_LOADING
         })
-
     }
 
     fun getRepositorios(isSwipe: Boolean = false) {
         openLoading()
+        isLoading = true
 
-        if (isSwipe) {
-            repositorioWebClient.getRepositorios(page, object : SearchResultListener {
-                override fun onSearchResult(result: RepositorioDTO) {
+        repositorioData.value?.let { repoDTO ->
 
-                    result.apply {
-                        status = RepositorioDTO.STATUS.SUCCESS
-                        recarga = isSwipe
-                        proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
-                        quantidadeAdicionada = result.items.size
-                        quantidadePorPagina = result.items.size
-                    }
+            repoDTO.proximaPage = if (isSwipe) 1 else repoDTO.proximaPage
 
-                    repositorioData.value = result
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    val response = repoDataRepository.getAll(repoDTO.proximaPage)
 
-                }
+                    if (response.isSuccessful) {
+                        val result = response.body()
 
-                override fun onSearchErro(mensagem: String) {
-                    dispararMensagemDeErro(mensagem)
-                }
-            })
-        } else
-            repositorioData.value?.let {
-                repositorioWebClient.getRepositorios(it.proximaPage, object : SearchResultListener {
-                    override fun onSearchResult(result: RepositorioDTO) {
+                        result?.let { repo ->
 
-                        result.apply {
-                            status = RepositorioDTO.STATUS.SUCCESS
-                            recarga = isSwipe
-                            proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
+                            repositorioData.postValue(repositorioData.value?.apply {
+                                status = STATUS.SUCCESS
+                                recarga = isSwipe
+                                proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
 
+                                if (isSwipe)
+                                    items = repo.items
+                                else
+                                    items.addAll(repo.items)
+
+                            })
+                            isLoading = false
                         }
-
-                        repositorioData.postValue(repositorioData.value?.apply {
-                            status = RepositorioDTO.STATUS.SUCCESS
-                            recarga = isSwipe
-                            proximaPage = repositorioData.value?.proximaPage?.plus(1) ?: 0
-                            quantidadeAdicionada = result.items.size
-
-                            it.items.addAll(result.items)
-                        })
-
+                    } else {
+                        dispararMensagemDeErro(response.message())
                     }
-
-                    override fun onSearchErro(mensagem: String) {
-
-                        dispararMensagemDeErro(mensagem)
-
-
-                    }
-                })
+                }
             }
+        }
     }
 
     private fun dispararMensagemDeErro(mensagem: String) {
         repositorioData.postValue(repositorioData.value?.apply {
             errorManseger = mensagem
-            status = RepositorioDTO.STATUS.ERROR
+            status = STATUS.ERROR
         })
+    }
+
+    fun buscarMaisItens(visibleItemCount: Int, totalItemCount: Int, firstVisibleItemPosition: Int) {
+        if (((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) && !isLoading) {
+            getRepositorios()
+        }
     }
 
 }

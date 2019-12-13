@@ -1,20 +1,15 @@
 package com.example.androidmvvm.view_model
 
-import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.androidmvvm.model.entidades.Proprietario
 import com.example.androidmvvm.model.entidades.RepositorioDTO
 import com.example.androidmvvm.model.enuns.STATUS
 import com.example.androidmvvm.model.repository.repository_impl.RepoDataRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
-import retrofit2.Response
 
 class RepositorioViewModel(private val repoDataRepository: RepoDataRepository) : ViewModel(),
     LifecycleObserver {

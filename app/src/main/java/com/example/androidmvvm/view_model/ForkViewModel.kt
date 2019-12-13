@@ -40,7 +40,7 @@ class ForkViewModel(private val forkDataRepository: ForkDataRepository) : ViewMo
         })
     }
 
-    fun getForks(nomeProprietario: String, nomeRepositorio: String, isSwipe: Boolean = false) {
+   fun getForks(nomeProprietario: String, nomeRepositorio: String, isSwipe: Boolean = false) {
         openLoading()
         isLoading = true
 

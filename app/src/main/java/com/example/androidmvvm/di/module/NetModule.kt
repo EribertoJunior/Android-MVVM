@@ -5,13 +5,10 @@ import com.example.androidmvvm.model.repository.repository_impl.RepoDataReposito
 import com.example.androidmvvm.model.retrofit.RetrofitConfig
 import com.example.androidmvvm.view_model.ForkViewModel
 import com.example.androidmvvm.view_model.RepositorioViewModel
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 const val PROPERTIES_BASE_URL = "BASE_URL"
 
